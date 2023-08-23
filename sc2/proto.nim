@@ -1,41 +1,12 @@
 
 import protobuf_serialization
-# import protobuf_serialization/files/type_generator
+
+# import protobuf_serialization/proto_parser
+# import_proto3 "../s2clientprotocol/temp.proto"
+
 
 # Attempt at reducing compile time by converting proto files to nim types
 type
-    AIBuild* = enum
-        RandomBuild = 1
-        Rush = 2
-        Timing = 3
-        Power = 4
-        Macro = 5
-        Air = 6
-        
-    Difficulty* = enum
-        VeryEasy = 1
-        Easy = 2
-        Medium = 3
-        MediumHard = 4
-        Hard = 5
-        Harder = 6
-        VeryHard = 7
-        CheatVision = 8
-        CheatMoney = 9
-        CheatInsane = 10
-
-    Race* = enum
-        NoRace = 0
-        Terran = 1
-        Zerg = 2
-        Protoss = 3
-        Random = 4
-
-    PlayerType* = enum
-        Participant = 1
-        Computer = 2
-        Observer = 3
-
     LocalMap* {.proto3.} = object
         map_path* {.fieldNumber: 1.}: string
 
@@ -47,23 +18,32 @@ type
     InterfaceOptions* {.proto3.} = object
         raw* {.fieldNumber: 1.}: bool
         score* {.fieldNumber: 2.}: bool
-        show_cloaked* {.fieldNumber: 3.}: bool
-        show_burrowed_shadows* {.fieldNumber: 4.}: bool
-        show_placeholders* {.fieldNumber: 5.}: bool
+        feature_layer* {.fieldNumber: 3.}: bool
+        render* {.fieldNumber: 4.}: bool
+        show_cloaked* {.fieldNumber: 5.}: bool
         raw_affects_selection* {.fieldNumber: 6.}: bool
         raw_crop_to_playable_area* {.fieldNumber: 7.}: bool
+        show_placeholders* {.fieldNumber: 8.}: bool
+        show_burrowed_shadows* {.fieldNumber: 9.}: bool
 
     RequestJoinGame* {.proto3.} = object
         race* {.fieldNumber: 1, pint.}: int32
-        options* {.fieldNumber: 2.}: InterfaceOptions
+        options* {.fieldNumber: 3.}: InterfaceOptions
 
     Request* {.proto3.} = object
         create_game* {.fieldNumber: 1.}: RequestCreateGame
         join_game* {.fieldNumber: 2.}: RequestJoinGame
+        # quit* {.fieldNumber: 8.}: RequestQuit
+        game_info* {.fieldNumber: 9.}: RequestGameInfo
 
     Response* {.proto3.} = object
         create_game* {.fieldNumber: 1.}: ResponseCreateGame
         join_game* {.fieldNumber: 2.}: ResponseJoinGame
+        # quit* {.fieldNumber: 8.}: ResponseQuit
+        game_info* {.fieldNumber: 9.}: ResponseGameInfo
+        id* {.fieldNumber: 97, pint.}: uint32
+        error* {.fieldNumber: 98.}: seq[string]
+        status* {.fieldNumber: 99, pint.}: int32
 
     ResponseCreateGame* {.proto3.} = object
         error* {.fieldNumber: 1, pint.}: int32
@@ -82,3 +62,58 @@ type
         difficulty* {.fieldNumber: 3, pint.}: int32
         player_name* {.fieldNumber: 4.}: string
         ai_build* {.fieldNumber: 5, pint.}: int32
+
+    RequestGameInfo* {.proto3.} = object
+    # RequestQuit* {.proto3.} = object
+
+    ResponseGameInfo* {.proto3.} = object
+        map_name* {.fieldNumber: 1.}: string
+        mod_names* {.fieldNumber: 6.}: seq[string]
+        local_map_path* {.fieldNumber: 2.}: string
+        player_info* {.fieldNumber: 3.}: seq[PlayerInfo]
+        start_raw* {.fieldNumber: 4.}: StartRaw
+        options* {.fieldNumber: 5.}: InterfaceOptions
+
+    StartRaw* {.proto3.} = object
+        map_size* {.fieldNumber: 1.}: Size2DI
+        pathing_grid* {.fieldNumber: 2.}: ImageData
+        terrain_height* {.fieldNumber: 3.}: ImageData
+        placement_grid* {.fieldNumber: 4.}: ImageData
+        playable_area* {.fieldNumber: 5.}: RectangleI
+        start_locations* {.fieldNumber: 6.}: seq[Point2D]
+
+    PlayerInfo* {.proto3.} = object
+        player_id* {.fieldNumber: 1, pint.}: int32
+        `type`* {.fieldNumber: 2, pint.}: int32
+        race_requested* {.fieldNumber: 3, pint.}: int32
+        race_actual* {.fieldNumber: 4, pint.}: int32
+        difficulty* {.fieldNumber: 5, pint.}: int32
+        ai_build* {.fieldNumber: 7, pint.}: int32
+        player_name* {.fieldNumber: 6.}: string
+
+    # common.proto
+    ImageData* {.proto3.} = object
+        bits_per_pixel* {.fieldNumber: 1, pint.}: int32
+        size* {.fieldNumber: 2.}: Size2DI
+        data* {.fieldNumber: 3, pint.}: seq[int32]
+
+    RectangleI* {.proto3.} = object
+        p0* {.fieldNumber: 1.}: PointI
+        p1* {.fieldNumber: 2.}: PointI
+
+    PointI* {.proto3.} = object
+        x* {.fieldNumber: 1, pint.}: int32
+        y* {.fieldNumber: 2, pint.}: int32
+
+    Point2D* {.proto3.} = object
+        x* {.fieldNumber: 1.}: float32
+        y* {.fieldNumber: 2.}: float32
+
+    Point* {.proto3.} = object
+        x* {.fieldNumber: 1.}: float32
+        y* {.fieldNumber: 2.}: float32
+        z* {.fieldNumber: 3.}: float32
+
+    Size2DI* {.proto3.} = object
+        x* {.fieldNumber: 1, pint.}: int32
+        y* {.fieldNumber: 2, pint.}: int32

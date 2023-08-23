@@ -1,12 +1,16 @@
 # nimble install protobuf_serialization
 import protobuf_serialization
-import protobuf_serialization/codec
-import protobuf_serialization/proto_parser
 
 # nimble install ws
 import asyncdispatch, ws
 
-import_proto3 "../s2clientprotocol/sc2api.proto"
+# Reduce compile time by a few seconds
+const useProtoFiles = false
+when useProtoFiles:
+    import protobuf_serialization/proto_parser
+    import_proto3 "../s2clientprotocol/sc2api.proto"
+else:
+    import proto
 
 import sc2process
 import enums
@@ -36,19 +40,33 @@ proc disconnect*(c: ref Client) =
     c.ws = nil
 
 proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
-    let encoded: seq[byte] = Protobuf.encode(request)
+    echo fmt"Sending: {request}"
+    var encoded: seq[byte] = Protobuf.encode(request)
+    if encoded.len == 0:
+        # getGameInfo
+        encoded = @[74.byte, 0.byte]
+    assert encoded.len != 0
+    echo fmt"Sending encoded: {encoded}"
     let encodedString: string = newString(encoded.len)
     copyMem(encodedString[0].unsafeAddr, encoded[0].unsafeAddr, encoded.len)
+    # echo fmt"Sending encoded string: {encodedString}"
     await c.ws.send(encodedString)
     let data: seq[byte] = await c.ws.receiveBinaryPacket()
+    echo fmt"Receiving raw: {data}"
     result = Protobuf.decode(data, Response)
-    echo result
+    echo fmt"Receiving: {result}"
 
 proc execute(c: ref Client, request: RequestCreateGame): Future[Response] {.async.} =
     return await c.sendRequest(Request(create_game: request))
 
 proc execute(c: ref Client, request: RequestJoinGame): Future[Response] {.async.} =
     return await c.sendRequest(Request(join_game: request))
+
+proc execute(c: ref Client, request: RequestGameInfo): Future[Response] {.async.} =
+    return await c.sendRequest(Request(game_info: request))
+
+# proc execute(c: ref Client, request: RequestQuit): Future[Response] {.async.} =
+#     return await c.sendRequest(Request(quit: request))
 
 proc createGame*(c: ref Client) {.async.} =
     let request = RequestCreateGame(
@@ -87,4 +105,9 @@ proc joinGame*(c: ref Client) {.async.} =
     )
     discard await c.execute request
 
+proc getGameInfo*(c: ref Client) {.async.} =
+    discard await c.execute(RequestGameInfo())
+
+# proc quit*(c: ref Client) {.async.} =
+#     discard await c.execute(RequestQuit())
 
