@@ -1,21 +1,15 @@
-# nimble install protobuf_serialization
-import protobuf_serialization
-
 # nimble install ws
-import asyncdispatch, ws
+import ws
 
-# Reduce compile time by a few seconds
-const useProtoFiles = false
-when useProtoFiles:
-    import protobuf_serialization/proto_parser
-    import_proto3 "../s2clientprotocol/sc2api.proto"
-else:
-    import proto
+# Converted protobufs
+import ../s2clientprotocol/sc2api_pb
+import ../s2clientprotocol/raw_pb
+import ../s2clientprotocol/common_pb
 
 import sc2process
-import enums
 
 import strformat
+import asyncdispatch
 
 type Client* = object
     process*: SC2Process
@@ -40,74 +34,70 @@ proc disconnect*(c: ref Client) =
     c.ws = nil
 
 proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
-    echo fmt"Sending: {request}"
-    var encoded: seq[byte] = Protobuf.encode(request)
-    if encoded.len == 0:
-        # getGameInfo
-        encoded = @[74.byte, 0.byte]
-    assert encoded.len != 0
-    echo fmt"Sending encoded: {encoded}"
-    let encodedString: string = newString(encoded.len)
-    copyMem(encodedString[0].unsafeAddr, encoded[0].unsafeAddr, encoded.len)
-    # echo fmt"Sending encoded string: {encodedString}"
-    await c.ws.send(encodedString)
+    await c.ws.send(serialize(request))
     let data: seq[byte] = await c.ws.receiveBinaryPacket()
-    echo fmt"Receiving raw: {data}"
-    result = Protobuf.decode(data, Response)
-    echo fmt"Receiving: {result}"
+    result = newResponse(data)
+    # echo result.id
+    # echo result.error
+    # echo result.status
 
-proc execute(c: ref Client, request: RequestCreateGame): Future[Response] {.async.} =
-    return await c.sendRequest(Request(create_game: request))
+proc createGame*(c: ref Client): Future[Response] {.async.} =
+    var request = newRequestCreateGame()
+    var localMap = newLocalMap()
+    localMap.map_path = "(2)CatalystLE.SC2Map"
+    request.local_map = localMap
+    var p1 = newPlayerSetup()
+    p1.ftype = PlayerType.Participant
+    var p2 = newPlayerSetup()
+    p2.ftype = PlayerType.Computer
+    p2.race = Race.Terran
+    p2.difficulty = Difficulty.VeryHard
+    request.player_setup = @[p1, p2]
+    request.realtime = false
+    var finalRequest = newRequest()
+    finalRequest.create_game = request
+    return await c.sendRequest(finalRequest)
 
-proc execute(c: ref Client, request: RequestJoinGame): Future[Response] {.async.} =
-    return await c.sendRequest(Request(join_game: request))
+proc joinGame*(c: ref Client): Future[Response] {.async.} =
+    var request = newRequestJoinGame()
+    request.race = Race.Terran
+    var options = newInterfaceOptions()
+    options.raw = true
+    options.score = true
+    options.show_cloaked = true
+    options.show_burrowed_shadows = true
+    options.show_placeholders = true
+    options.raw_affects_selection = true
+    options.raw_crop_to_playable_area = true
+    request.options = options
+    var finalRequest = newRequest()
+    finalRequest.join_game = request
+    return await c.sendRequest(finalRequest)
 
-proc execute(c: ref Client, request: RequestGameInfo): Future[Response] {.async.} =
-    return await c.sendRequest(Request(game_info: request))
+proc getGameInfo*(c: ref Client): Future[Response] {.async.} =
+    var request = newRequestGameInfo()
+    var finalRequest = newRequest()
+    finalRequest.game_info = request
+    return await c.sendRequest(finalRequest)
 
-# proc execute(c: ref Client, request: RequestQuit): Future[Response] {.async.} =
-#     return await c.sendRequest(Request(quit: request))
+proc getObservation*(c: ref Client, gameLoop: uint32): Future[Response] {.async.} =
+    var request = newRequestObservation()
+    request.gameLoop = gameLoop
+    var finalRequest = newRequest()
+    finalRequest.observation = request
+    return await c.sendRequest(finalRequest)
 
-proc createGame*(c: ref Client) {.async.} =
-    let request = RequestCreateGame(
-            local_map: LocalMap(
-                map_path: "(2)CatalystLE.SC2Map",
-        ),
-        player_setup: @[
-            PlayerSetup(
-                type: PlayerType.Participant.ord,
-                # race: 1,
-            ),
-            PlayerSetup(
-                type: PlayerType.Computer.ord,
-                # race: 1,
-                    # difficulty: 1,
-                race: Race.Terran.ord,
-                difficulty: Difficulty.VeryHard.ord,
-            ),
-        ],
-        realtime: false
-    )
-    discard await c.execute request
+proc step*(c: ref Client, count: uint32): Future[Response] {.async.} =
+    var request = newRequestStep()
+    request.count = count
+    var finalRequest = newRequest()
+    finalRequest.step = request
+    return await c.sendRequest(finalRequest)
 
-proc joinGame*(c: ref Client) {.async.} =
-    let request = RequestJoinGame(
-            race: Race.Terran.ord,
-            options: InterfaceOptions(
-                raw: true,
-                score: true,
-                show_cloaked: true,
-                show_burrowed_shadows: true,
-                show_placeholders: true,
-                raw_affects_selection: true,
-                raw_crop_to_playable_area: true,
-        ),
-    )
-    discard await c.execute request
-
-proc getGameInfo*(c: ref Client) {.async.} =
-    discard await c.execute(RequestGameInfo())
-
-# proc quit*(c: ref Client) {.async.} =
-#     discard await c.execute(RequestQuit())
-
+proc sendActions*(c: ref Client, actions: seq[Action]): Future[Response] {.async.} =
+    # Dont send request if actions list empty?
+    var actionsRequest = newRequestAction()
+    actionsRequest.actions = actions
+    var finalRequest = newRequest()
+    finalRequest.action = actionsRequest
+    return await c.sendRequest(finalRequest)
