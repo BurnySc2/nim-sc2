@@ -5,5 +5,8 @@ htmldocs/
 # No proto files
 *.proto
 
+# No executables
+bin
+
 nimpb_build
 nimpb_build.exe
