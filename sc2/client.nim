@@ -6,10 +6,10 @@ import ../s2clientprotocol/sc2api_pb
 import ../s2clientprotocol/raw_pb
 import ../s2clientprotocol/common_pb
 
-import sc2process
-
 import strformat
 import asyncdispatch
+
+import sc2process
 
 type Client* = object
     process*: SC2Process
@@ -37,9 +37,11 @@ proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
     await c.ws.send(serialize(request))
     let data: seq[byte] = await c.ws.receiveBinaryPacket()
     result = newResponse(data)
-    # echo result.id
-    # echo result.error
-    # echo result.status
+    if result.error.len > 0:
+        echo result.id
+        echo result.status
+        echo result.error
+
 
 proc createGame*(c: ref Client): Future[Response] {.async.} =
     var request = newRequestCreateGame()
