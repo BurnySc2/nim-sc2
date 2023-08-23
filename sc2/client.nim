@@ -30,25 +30,25 @@ proc connect*(c: ref Client) {.async.} =
             await sleepAsync(100)
     c.wsConnected = true
 
-proc disconnect*(c: ref Client) = 
+proc disconnect*(c: ref Client) =
     c.wsConnected = false
     c.ws.close
     c.ws = nil
 
-proc execute(c: ref Client, request: RequestCreateGame | RequestJoinGame) {.async.} =
-    var finalRequest = Request()
-    when request is RequestCreateGame:
-        finalRequest.create_game = request
-    when request is RequestJoinGame:
-        finalRequest.join_game = request
-    let encoded: seq[byte] = Protobuf.encode(finalRequest)
+proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
+    let encoded: seq[byte] = Protobuf.encode(request)
     let encodedString: string = newString(encoded.len)
     copyMem(encodedString[0].unsafeAddr, encoded[0].unsafeAddr, encoded.len)
     await c.ws.send(encodedString)
     let data: seq[byte] = await c.ws.receiveBinaryPacket()
-    let dataDecoded = Protobuf.decode(data, Response)
-    echo dataDecoded
-    # TODO Return response
+    result = Protobuf.decode(data, Response)
+    echo result
+
+proc execute(c: ref Client, request: RequestCreateGame): Future[Response] {.async.} =
+    return await c.sendRequest(Request(create_game: request))
+
+proc execute(c: ref Client, request: RequestJoinGame): Future[Response] {.async.} =
+    return await c.sendRequest(Request(join_game: request))
 
 proc createGame*(c: ref Client) {.async.} =
     let request = RequestCreateGame(
@@ -70,7 +70,7 @@ proc createGame*(c: ref Client) {.async.} =
         ],
         realtime: false
     )
-    await c.execute request
+    discard await c.execute request
 
 proc joinGame*(c: ref Client) {.async.} =
     let request = RequestJoinGame(
@@ -85,6 +85,6 @@ proc joinGame*(c: ref Client) {.async.} =
                 raw_crop_to_playable_area: true,
         ),
     )
-    await c.execute request
+    discard await c.execute request
 
 
