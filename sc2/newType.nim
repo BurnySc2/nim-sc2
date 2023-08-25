@@ -23,13 +23,13 @@ proc newRequest*(request: RequestAction): Request =
     result.action = request
 
 proc newAction*(abilityId: int32, unitTags: seq[uint64], targetWorldSpacePos: Point2D): Action =
-    var actionRawUnitCommand = newActionRawUnitCommand()
+    let actionRawUnitCommand = newActionRawUnitCommand()
     actionRawUnitCommand.abilityId = abilityId
     actionRawUnitCommand.unitTags = unitTags
     actionRawUnitCommand.targetWorldSpacePos = targetWorldSpacePos
     # TODO queue https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/raw.proto#L192
 
-    var actionRaw = newActionRaw()
+    let actionRaw = newActionRaw()
     actionRaw.unitCommand = actionRawUnitCommand
 
     result = newAction()
@@ -37,7 +37,7 @@ proc newAction*(abilityId: int32, unitTags: seq[uint64], targetWorldSpacePos: Po
 
 proc newAction*(abilityId: int32, unitTags: seq[uint64], x: float32, y: float32): Action =
     # TODO queue param
-    var target = newPoint2D()
+    let target = newPoint2D()
     target.x = x
     target.y = y
     newAction(abilityId = abilityId, unitTags = unitTags, targetWorldSpacePos = target)

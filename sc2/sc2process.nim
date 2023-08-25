@@ -3,15 +3,17 @@ import system
 import osproc
 import logging
 
-var logger = newConsoleLogger(fmtStr="[$time] - $levelname: ")
+let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
-type SC2Process* = object 
-    ip*: string
-    port*: string
-    cwd*: string
-    process: Process
+type
+    SC2Process* = ref SC2ProcessObj
+    SC2ProcessObj* = object
+        ip*: string
+        port*: string
+        cwd*: string
+        process: Process
 
-proc launch*(p: ref SC2Process) =
+proc launch*(p: SC2Process) =
     logger.log(lvlInfo, "Launching sc2")
     p.process = startProcess(
         command = "/usr/bin/wine",
@@ -21,12 +23,12 @@ proc launch*(p: ref SC2Process) =
                 p.port, "-dataDir", p.cwd, "-tempDir", "/tmp/SC2_0peqhatp", ]
     )
 
-proc kill(p: ref SC2Process) =
+proc kill(p: SC2Process) =
     logger.log(lvlInfo, "Killing sc2")
     p.process.close()
     discard execCmd("/usr/bin/wineserver -k")
 
-template withSC2Process*(process: ref SC2Process, body: untyped): untyped =
+template withSC2Process*(process: SC2Process, body: untyped): untyped =
     # Alternatively: https://nim-lang.org/docs/manual.html#exception-handling-defer-statement
     process.launch
     try:

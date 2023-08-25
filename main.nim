@@ -16,7 +16,7 @@ import sc2/client
 import sc2/newType
 import sc2/sc2process
 
-var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
+let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 # Start game
 # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/sc2process.py#L139
@@ -25,7 +25,7 @@ const port = "38941"
 const cwd = "/media/ssd480/Games/starcraft3/drive_c/Program Files (x86)/StarCraft II/"
 
 proc main() {.async.} =
-    let process: ref SC2Process = (ref SC2Process)(ip: ip, port: port, cwd: cwd)
+    let process = SC2Process(ip: ip, port: port, cwd: cwd)
     withSC2Process(process):
         # Connect to websocket
         # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/sc2process.py#L204
@@ -33,7 +33,7 @@ proc main() {.async.} =
         logger.log(lvlInfo, "Connecting to websocket")
         # Not sure why it needs to be like this
         # https://nim-lang.org/docs/manual.html#types-object-construction
-        let client: ref Client = (ref Client)(process: process)
+        let client = Client(process: process)
         await client.connect
 
         # Create game (= send which map to load)
@@ -43,7 +43,7 @@ proc main() {.async.} =
         # Join game as player (map loading will start after this request)
         discard await client.joinGame
 
-        let bot: ref Bot = await newBot(client = client)
+        let bot = await newBot(client = client)
 
         # Run till game completed
         await bot.botLoop

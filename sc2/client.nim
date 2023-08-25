@@ -12,17 +12,19 @@ import strformat
 import sc2process
 import newType
 
-var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
+let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
-type Client* = object
-    process*: ref SC2Process
-    ws*: WebSocket
-    wsConnected: bool
+type
+    Client* = ref ClientObj
+    ClientObj* = object
+        process*: SC2Process
+        ws*: WebSocket
+        wsConnected: bool
 
-proc wsPath(c: ref Client): string =
+proc wsPath(c: Client): string =
     fmt"ws://{c.process.ip}:{c.process.port}/sc2api"
 
-proc connect*(c: ref Client) {.async.} =
+proc connect*(c: Client) {.async.} =
     let path = c.wsPath
     while c.ws == nil:
         try:
@@ -31,7 +33,7 @@ proc connect*(c: ref Client) {.async.} =
             await sleepAsync(100)
     c.wsConnected = true
 
-proc disconnect*(c: ref Client) =
+proc disconnect*(c: Client) =
     c.wsConnected = false
     c.ws.close
     c.ws = nil
@@ -46,7 +48,7 @@ proc validateRequest*(request: Request) =
         raise e
     assert $request == $deserialized, fmt"Error, deserializing the serialized request does not result in the same:\n\n{request} \n\n!=\n\n{deserialized}"
 
-proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
+proc sendRequest(c: Client, request: Request): Future[Response] {.async.} =
     when not defined(release):
         # Dont run in release mode
         validateRequest(request)
@@ -65,10 +67,10 @@ proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
         logger.log(lvlInfo, "Request of previous response was:")
         logger.log(lvlInfo, &"  {request}")
 
-proc getAvailableMaps*(c: ref Client): Future[Response] {.async.} # Defined later
-proc createGame*(c: ref Client): Future[Response] {.async.} =
-    var request = newRequestCreateGame()
-    var localMap = newLocalMap()
+proc getAvailableMaps*(c: Client): Future[Response] {.async.} # Defined later
+proc createGame*(c: Client): Future[Response] {.async.} =
+    let request = newRequestCreateGame()
+    let localMap = newLocalMap()
     localMap.mapPath = "(2)CatalystLE.SC2Map"
 
     # Validate that the requested map is available
@@ -77,22 +79,22 @@ proc createGame*(c: ref Client): Future[Response] {.async.} =
     doAssert maps.contains(localMap.mapPath), fmt"Map '{localMap.mapPath}' was not found. Available maps are: {maps}"
 
     request.localMap = localMap
-    var p1 = newPlayerSetup()
+    let p1 = newPlayerSetup()
     p1.ftype = PlayerType.Participant
-    var p2 = newPlayerSetup()
+    let p2 = newPlayerSetup()
     p2.ftype = PlayerType.Computer
     p2.race = Race.Terran
     p2.difficulty = Difficulty.VeryHard
     request.playerSetup = @[p1, p2]
     request.realtime = false
-    var finalRequest = newRequest()
+    let finalRequest = newRequest()
     finalRequest.createGame = request
     return await c.sendRequest(finalRequest)
 
-proc joinGame*(c: ref Client): Future[Response] {.async.} =
-    var request = newRequestJoinGame()
+proc joinGame*(c: Client): Future[Response] {.async.} =
+    let request = newRequestJoinGame()
     request.race = Race.Terran
-    var options = newInterfaceOptions()
+    let options = newInterfaceOptions()
     options.raw = true
     options.score = true
     options.showCloaked = true
@@ -101,53 +103,55 @@ proc joinGame*(c: ref Client): Future[Response] {.async.} =
     options.rawAffectsSelection = true
     options.rawCropToPlayableArea = true
     request.options = options
-    var finalRequest = newRequest()
+    let finalRequest = newRequest()
     finalRequest.joinGame = request
     return await c.sendRequest(finalRequest)
 
-proc getAvailableMaps*(c: ref Client): Future[Response] {.async.} =
-    var request = newRequestAvailableMaps()
-    var finalRequest = newRequest()
+proc getAvailableMaps*(c: Client): Future[Response] {.async.} =
+    let request = newRequestAvailableMaps()
+    let finalRequest = newRequest()
     finalRequest.availableMaps = request
     return await c.sendRequest(finalRequest)
 
-proc getGameInfo*(c: ref Client): Future[Response] {.async.} =
-    var request = newRequestGameInfo()
-    var finalRequest = newRequest()
+proc getGameInfo*(c: Client): Future[Response] {.async.} =
+    let request = newRequestGameInfo()
+    let finalRequest = newRequest()
     finalRequest.gameInfo = request
     return await c.sendRequest(finalRequest)
 
-proc getGameData*(c: ref Client): Future[Response] {.async.} =
-    var request = newRequestData()
+proc getGameData*(c: Client): Future[Response] {.async.} =
+    let request = newRequestData()
     request.abilityId = true
     request.unitTypeId = true
     request.upgradeId = true
     request.buffId = true
     request.effectId = true
-    var finalRequest = newRequest()
+    let finalRequest = newRequest()
     finalRequest.data = request
     return await c.sendRequest(finalRequest)
 
-proc getObservation*(c: ref Client): Future[Response] {.async.} =
-    var request = newRequestObservation()
-    var finalRequest = newRequest()
+proc getObservation*(c: Client): Future[Response] {.async.} =
+    let request = newRequestObservation()
+    let finalRequest = newRequest()
     finalRequest.observation = request
     return await c.sendRequest(finalRequest)
 
-proc step*(c: ref Client, count: uint32): Future[Response] {.async.} =
+proc step*(c: Client, count: uint32): Future[Response] {.async.} =
     return await c.sendRequest(newRequest(request = newRequestStep(count = count)))
 
-proc sendActions*(c: ref Client, actions: seq[Action]): Future[Response] {.async.} =
+proc sendActions*(c: Client, actions: seq[Action]): Future[Response] {.async.} =
     # TODO Dont send request if actions list empty?
     return await c.sendRequest(newRequest(request = newRequestAction(actions = actions)))
 
 when isMainModule:
-    var point = newPoint2D()
+    import ../s2clientprotocol/raw_pb
+
+    let point = newPoint2D()
     point.x = 10
     point.y = 20
     assert $point == $newPoint2D(serialize(point))
 
-    var actionRawUnitCommand = newActionRawUnitCommand()
+    let actionRawUnitCommand = newActionRawUnitCommand()
     actionRawUnitCommand.abilityId = 1234
     actionRawUnitCommand.unitTags = @[1234.uint64]
     actionRawUnitCommand.targetWorldSpacePos = point

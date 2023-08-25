@@ -12,26 +12,25 @@ import system
 import client
 import newType
 
-var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
+let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 type
-    Bot* = object
-        client*: ref Client
+    Bot* = ref BotObj
+    BotObj* = object
+        client*: Client
         gameData*: ResponseData
         gameInfo*: ResponseGameInfo
         observation*: ResponseObservation
         actions*: seq[Action]
         status*: Status
 
-proc observationRaw*(bot: ref Bot): ObservationRaw = bot.observation.observation.rawData
-proc enemySpawns*(bot: ref Bot): seq[Point2D] = bot.gameInfo.startRaw.startLocations
-proc gameLoop*(bot: ref Bot): uint32 = bot.observation.observation.gameLoop
+proc observationRaw*(bot: Bot): ObservationRaw = bot.observation.observation.rawData
+proc enemySpawns*(bot: Bot): seq[Point2D] = bot.gameInfo.startRaw.startLocations
+proc gameLoop*(bot: Bot): uint32 = bot.observation.observation.gameLoop
 
-proc newBot*(client: ref Client): Future[ref Bot] {.async.} =
+proc newBot*(client: Client): Future[Bot] {.async.} =
     # Init variables
-    result = (ref Bot)()
-    result.status = Status.unknown
-    result.client = client
+    result = Bot(status: Status.unknown, client: client)
 
     let gameDataResponse = await result.client.getGameData
     result.status = gameDataResponse.status
@@ -47,7 +46,7 @@ proc newBot*(client: ref Client): Future[ref Bot] {.async.} =
 
     assert result.enemySpawns.len == 1, "Requires two player map"
 
-proc onStart(bot: ref Bot) {.async.} =
+proc onStart(bot: Bot) {.async.} =
     let newActions = collect:
         for unit in bot.observationRaw.units:
             if unit.alliance != Alliance.Self:
@@ -55,10 +54,10 @@ proc onStart(bot: ref Bot) {.async.} =
                 unitTags = @[unit.tag], targetWorldSpacePos = bot.enemySpawns[0])
     bot.actions &= newActions
 
-proc step(bot: ref Bot) {.async.} = 
+proc step(bot: Bot) {.async.} =
     discard
 
-proc botLoop*(bot: ref Bot) {.async.} =
+proc botLoop*(bot: Bot) {.async.} =
     while bot.status == Status.inGame:
         # Request observation
         let responseObservation: Response = await bot.client.getObservation
