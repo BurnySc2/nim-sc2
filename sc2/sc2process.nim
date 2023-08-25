@@ -11,7 +11,7 @@ type SC2Process* = object
     cwd*: string
     process: Process
 
-proc launch*(p: var SC2Process) =
+proc launch*(p: ref SC2Process) =
     logger.log(lvlInfo, "Launching sc2")
     p.process = startProcess(
         command = "/usr/bin/wine",
@@ -21,12 +21,12 @@ proc launch*(p: var SC2Process) =
                 p.port, "-dataDir", p.cwd, "-tempDir", "/tmp/SC2_0peqhatp", ]
     )
 
-proc kill(p: SC2Process) =
+proc kill(p: ref SC2Process) =
     logger.log(lvlInfo, "Killing sc2")
     p.process.close()
     discard execCmd("/usr/bin/wineserver -k")
 
-template withSC2Process*(process: var SC2Process, body: untyped): untyped =
+template withSC2Process*(process: ref SC2Process, body: untyped): untyped =
     # Alternatively: https://nim-lang.org/docs/manual.html#exception-handling-defer-statement
     process.launch
     try:

@@ -3,12 +3,11 @@ import ws
 
 # Converted protobufs
 import ../s2clientprotocol/sc2api_pb
-import ../s2clientprotocol/raw_pb
 import ../s2clientprotocol/common_pb
 
-import strformat
 import asyncdispatch
 import logging
+import strformat
 
 import sc2process
 import newType
@@ -16,7 +15,7 @@ import newType
 var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 type Client* = object
-    process*: SC2Process
+    process*: ref SC2Process
     ws*: WebSocket
     wsConnected: bool
 
@@ -129,9 +128,8 @@ proc getGameData*(c: ref Client): Future[Response] {.async.} =
     finalRequest.data = request
     return await c.sendRequest(finalRequest)
 
-proc getObservation*(c: ref Client, gameLoop: uint32): Future[Response] {.async.} =
+proc getObservation*(c: ref Client): Future[Response] {.async.} =
     var request = newRequestObservation()
-    request.gameLoop = gameLoop
     var finalRequest = newRequest()
     finalRequest.observation = request
     return await c.sendRequest(finalRequest)
