@@ -3,8 +3,8 @@
 import base64
 import intsets
 import json
-import strutils
 import strformat
+import strutils
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -553,8 +553,9 @@ proc `$`*(message: DebugKillUnit): string =
 
 proc sizeOfDebugKillUnit*(message: DebugKillUnit): uint64 =
     if len(message.tag) > 0:
-        result = result + sizeOfTag(1, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.tag, FieldType.UInt64))
+        for value in message.tag:
+            result = result + sizeOfTag(1, WireType.Varint)
+            result = result + sizeOfUInt64(value)
     result = result + sizeOfUnknownFields(message)
 
 proc writeDebugKillUnit*(stream: Stream, message: DebugKillUnit) =

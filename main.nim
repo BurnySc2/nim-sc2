@@ -14,7 +14,6 @@ import sc2/sc2process
 import sc2/client
 import sc2/newType
 
-const sendGroupedActions = false
 var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 # Start game
@@ -70,27 +69,15 @@ proc main() {.async.} =
             var raw: ObservationRaw = observation.rawData
 
             if gameLoop == 0:
-                when sendGroupedActions:
-                    var unitActions: seq[Action]
-                    for i, unit in raw.units:
-                        if unit.alliance != Alliance.Self:
-                            continue
-                        # echo $unit
-                        unitActions.add(newAction(abilityId = 3674, # Attack
-                        unitTags = @[unit.tag],
-                                targetWorldSpacePos = enemySpawn))
-                        if unitActions.len > 1:
-                            # Crashes when there are 2 or more units, so for easier debugging stop at 2
-                            break
-                    let responseAction = await client.sendActions(unitActions)
-                else:
-                    for i, unit in raw.units:
-                        if unit.alliance != Alliance.Self:
-                            continue
-                        # echo $unit
-                        let responseAction = await client.sendActions(@[newAction(abilityId = 3674, # Attack
-                        unitTags = @[unit.tag],
-                                targetWorldSpacePos = enemySpawn)])
+                var unitActions: seq[Action]
+                for i, unit in raw.units:
+                    if unit.alliance != Alliance.Self:
+                        continue
+                    # echo $unit
+                    unitActions.add(newAction(abilityId = 3674, # Attack
+                    unitTags = @[unit.tag],
+                            targetWorldSpacePos = enemySpawn))
+                let responseAction = await client.sendActions(unitActions)
 
             # Request step
             let responseStep = await client.step(32)

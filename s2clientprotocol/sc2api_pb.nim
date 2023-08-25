@@ -3,8 +3,8 @@
 import base64
 import intsets
 import json
-import strutils
 import strformat
+import strutils
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -1350,8 +1350,9 @@ proc `$`*(message: ActionObserverCameraFollowUnits): string =
 
 proc sizeOfActionObserverCameraFollowUnits*(message: ActionObserverCameraFollowUnits): uint64 =
     if len(message.unitTags) > 0:
-        result = result + sizeOfTag(1, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.unitTags, FieldType.UInt64))
+        for value in message.unitTags:
+            result = result + sizeOfTag(1, WireType.Varint)
+            result = result + sizeOfUInt64(value)
     result = result + sizeOfUnknownFields(message)
 
 proc writeActionObserverCameraFollowUnits*(stream: Stream, message: ActionObserverCameraFollowUnits) =
@@ -2432,8 +2433,9 @@ proc sizeOfObservation*(message: Observation): uint64 =
         result = result + sizeOfTag(1, WireType.LengthDelimited)
         result = result + sizeOfLengthDelimited(sizeOfPlayerCommon(message.playerCommon))
     if len(message.alerts) > 0:
-        result = result + sizeOfTag(10, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.alerts, FieldType.Enum))
+        for value in message.alerts:
+            result = result + sizeOfTag(10, WireType.Varint)
+            result = result + sizeOfEnum[Alert](value)
     for value in message.abilities:
         result = result + sizeOfTag(3, WireType.LengthDelimited)
         result = result + sizeOfLengthDelimited(sizeOfAvailableAbility(value))
@@ -6171,8 +6173,9 @@ proc `$`*(message: ResponseAction): string =
 
 proc sizeOfResponseAction*(message: ResponseAction): uint64 =
     if len(message.result) > 0:
-        result = result + sizeOfTag(1, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.result, FieldType.Enum))
+        for value in message.result:
+            result = result + sizeOfTag(1, WireType.Varint)
+            result = result + sizeOfEnum[ActionResult](value)
     result = result + sizeOfUnknownFields(message)
 
 proc writeResponseAction*(stream: Stream, message: ResponseAction) =

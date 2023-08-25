@@ -3,8 +3,8 @@
 import base64
 import intsets
 import json
-import strutils
 import strformat
+import strutils
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -1031,8 +1031,9 @@ proc sizeOfSinglePanel*(message: SinglePanel): uint64 =
         result = result + sizeOfTag(4, WireType.Varint)
         result = result + sizeOfInt32(message.shieldUpgradeLevel)
     if len(message.buffs) > 0:
-        result = result + sizeOfTag(5, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.buffs, FieldType.Int32))
+        for value in message.buffs:
+            result = result + sizeOfTag(5, WireType.Varint)
+            result = result + sizeOfInt32(value)
     result = result + sizeOfUnknownFields(message)
 
 proc writeSinglePanel*(stream: Stream, message: SinglePanel) =

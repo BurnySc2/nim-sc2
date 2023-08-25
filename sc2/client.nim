@@ -140,9 +140,7 @@ proc step*(c: ref Client, count: uint32): Future[Response] {.async.} =
     return await c.sendRequest(newRequest(request = newRequestStep(count = count)))
 
 proc sendActions*(c: ref Client, actions: seq[Action]): Future[Response] {.async.} =
-    # Dont send request if actions list empty?
-    # assert actions.len <= 1, "Currently crashes when more than 1 action is sent, why?"
-    # logger.log(lvlInfo, fmt"Actions: {actions}")
+    # TODO Dont send request if actions list empty?
     return await c.sendRequest(newRequest(request = newRequestAction(actions = actions)))
 
 when isMainModule:
@@ -155,17 +153,17 @@ when isMainModule:
     actionRawUnitCommand.abilityId = 1234
     actionRawUnitCommand.unitTags = @[1234.uint64]
     actionRawUnitCommand.targetWorldSpacePos = point
+    # Print out the bytes
+    # echo cast[seq[byte]](serialize(actionRawUnitCommand))
+    # echo cast[seq[byte]](serialize(actionRawUnitCommand)).len - 2
     assert $actionRawUnitCommand == $newActionRawUnitCommand(serialize(actionRawUnitCommand))
 
-    var actionRaw = newActionRaw()
+    let actionRaw = newActionRaw()
     actionRaw.unitCommand = actionRawUnitCommand
     let serialized = serialize(actionRaw)
-    # Fails:
     let deserialized = newActionRaw(serialized)
-    # Never reached:
     assert $actionRaw == $deserialized
 
-    # Next test case once the one above works:
     let action = newAction()
     action.actionRaw = actionRaw
     assert $action == $newAction(serialize(action))

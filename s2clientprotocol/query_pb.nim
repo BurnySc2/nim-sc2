@@ -3,8 +3,8 @@
 import base64
 import intsets
 import json
-import strutils
 import strformat
+import strutils
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json

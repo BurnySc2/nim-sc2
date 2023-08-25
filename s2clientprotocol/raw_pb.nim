@@ -3,8 +3,8 @@
 import base64
 import intsets
 import json
-import strutils
 import strformat
+import strutils
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -349,8 +349,9 @@ proc `$`*(message: Event): string =
 
 proc sizeOfEvent*(message: Event): uint64 =
     if len(message.deadUnits) > 0:
-        result = result + sizeOfTag(1, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.deadUnits, FieldType.UInt64))
+        for value in message.deadUnits:
+            result = result + sizeOfTag(1, WireType.Varint)
+            result = result + sizeOfUInt64(value)
     result = result + sizeOfUnknownFields(message)
 
 proc writeEvent*(stream: Stream, message: Event) =
@@ -962,8 +963,9 @@ proc sizeOfActionRawToggleAutocast*(message: ActionRawToggleAutocast): uint64 =
         result = result + sizeOfTag(1, WireType.Varint)
         result = result + sizeOfInt32(message.abilityId)
     if len(message.unitTags) > 0:
-        result = result + sizeOfTag(2, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.unitTags, FieldType.UInt64))
+        for value in message.unitTags:
+            result = result + sizeOfTag(2, WireType.Varint)
+            result = result + sizeOfUInt64(value)
     result = result + sizeOfUnknownFields(message)
 
 proc writeActionRawToggleAutocast*(stream: Stream, message: ActionRawToggleAutocast) =
@@ -1316,8 +1318,9 @@ proc sizeOfPlayerRaw*(message: PlayerRaw): uint64 =
         result = result + sizeOfTag(2, WireType.LengthDelimited)
         result = result + sizeOfLengthDelimited(sizeOfPoint(message.camera))
     if len(message.upgradeIds) > 0:
-        result = result + sizeOfTag(3, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.upgradeIds, FieldType.UInt32))
+        for value in message.upgradeIds:
+            result = result + sizeOfTag(3, WireType.Varint)
+            result = result + sizeOfUInt32(value)
     result = result + sizeOfUnknownFields(message)
 
 proc writePlayerRaw*(stream: Stream, message: PlayerRaw) =
@@ -2900,8 +2903,9 @@ proc sizeOfUnit*(message: Unit): uint64 =
         result = result + sizeOfTag(10, WireType.Varint)
         result = result + sizeOfEnum[CloakState](message.cloak)
     if len(message.buffIds) > 0:
-        result = result + sizeOfTag(27, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.buffIds, FieldType.UInt32))
+        for value in message.buffIds:
+            result = result + sizeOfTag(27, WireType.Varint)
+            result = result + sizeOfUInt32(value)
     if hasdetectRange(message):
         result = result + sizeOfTag(31, WireType.Fixed32)
         result = result + sizeOfFloat(message.detectRange)
@@ -3415,8 +3419,9 @@ proc sizeOfActionRawUnitCommand*(message: ActionRawUnitCommand): uint64 =
         result = result + sizeOfTag(3, WireType.Varint)
         result = result + sizeOfUInt64(message.target.targetUnitTag)
     if len(message.unitTags) > 0:
-        result = result + sizeOfTag(4, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.unitTags, FieldType.UInt64))
+        for value in message.unitTags:
+            result = result + sizeOfTag(4, WireType.Varint)
+            result = result + sizeOfUInt64(value)
     if hasqueueCommand(message):
         result = result + sizeOfTag(5, WireType.Varint)
         result = result + sizeOfBool(message.queueCommand)

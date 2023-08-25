@@ -3,8 +3,8 @@
 import base64
 import intsets
 import json
-import strutils
 import strformat
+import strutils
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -1715,8 +1715,9 @@ proc sizeOfUnitTypeData*(message: UnitTypeData): uint64 =
         result = result + sizeOfTag(25, WireType.Fixed32)
         result = result + sizeOfFloat(message.sightRange)
     if len(message.techAlias) > 0:
-        result = result + sizeOfTag(21, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.techAlias, FieldType.UInt32))
+        for value in message.techAlias:
+            result = result + sizeOfTag(21, WireType.Varint)
+            result = result + sizeOfUInt32(value)
     if hasunitAlias(message):
         result = result + sizeOfTag(22, WireType.Varint)
         result = result + sizeOfUInt32(message.unitAlias)
@@ -1727,8 +1728,9 @@ proc sizeOfUnitTypeData*(message: UnitTypeData): uint64 =
         result = result + sizeOfTag(24, WireType.Varint)
         result = result + sizeOfBool(message.requireAttached)
     if len(message.attributes) > 0:
-        result = result + sizeOfTag(8, WireType.LengthDelimited)
-        result = result + sizeOfLengthDelimited(packedFieldSize(message.attributes, FieldType.Enum))
+        for value in message.attributes:
+            result = result + sizeOfTag(8, WireType.Varint)
+            result = result + sizeOfEnum[Attribute](value)
     if hasmovementSpeed(message):
         result = result + sizeOfTag(9, WireType.Fixed32)
         result = result + sizeOfFloat(message.movementSpeed)
