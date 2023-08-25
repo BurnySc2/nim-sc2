@@ -7,8 +7,11 @@ htmldocs/
 
 # No executables
 bin
+
+# Ignore files without an extension
 *
 !*/
 !*.*
 
+nimpb_build
 nimpb_build.exe

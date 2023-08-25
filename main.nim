@@ -2,17 +2,20 @@
 import s2clientprotocol/sc2api_pb
 import s2clientprotocol/raw_pb
 import s2clientprotocol/common_pb
+import s2clientprotocol/data_pb
 
 import asyncdispatch
 import os
 import system
 import strformat
+import logging
 
 import sc2/sc2process
 import sc2/client
 import sc2/newType
 
 const sendGroupedActions = false
+var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 # Start game
 # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/sc2process.py#L139
@@ -26,7 +29,7 @@ proc main() {.async.} =
         # Connect to websocket
         # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/sc2process.py#L204
         # https://github.com/treeform/ws#example-client-socket
-        echo "Connecting to websocket"
+        logger.log(lvlInfo, "Connecting to websocket")
         # Not sure why it needs to be like this
         # https://nim-lang.org/docs/manual.html#types-object-construction
         let client: ref Client = (ref Client)(process: process)
@@ -46,12 +49,17 @@ proc main() {.async.} =
         let enemySpawn = spawnLocations[0]
         echo fmt"Enemy spawn at {enemySpawn.x=} {enemySpawn.y=}"
         var status = gameInfo.status
-        # TODO Request data
-        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/sc2api.proto#L404-L418
+
+        # Request data
+        let gameData = await client.getGameData()
+        # Write to enum file?
+        # Overwrite enum values when trying to access them? Dont crash when enum doesnt exist
+        # for i, unit in gameData.data.units[0..100]:
+        #     echo $unit
 
         var gameLoop: uint32 = 0
         # Loop while game is not over
-        while status == Status.in_game:
+        while status == Status.inGame:
             # Request observation
             let responseObservation = await client.getObservation(gameLoop)
             # if responseObservation.observation.hasPlayerResult:
@@ -59,7 +67,7 @@ proc main() {.async.} =
             #     break
             let observation = responseObservation.observation.observation
             gameLoop = observation.gameLoop
-            var raw: ObservationRaw = observation.raw_data
+            var raw: ObservationRaw = observation.rawData
 
             if gameLoop == 0:
                 when sendGroupedActions:
@@ -67,7 +75,7 @@ proc main() {.async.} =
                     for i, unit in raw.units:
                         if unit.alliance != Alliance.Self:
                             continue
-                        echo $unit
+                        # echo $unit
                         unitActions.add(newAction(abilityId = 3674, # Attack
                         unitTags = @[unit.tag],
                                 targetWorldSpacePos = enemySpawn))
@@ -79,7 +87,7 @@ proc main() {.async.} =
                     for i, unit in raw.units:
                         if unit.alliance != Alliance.Self:
                             continue
-                        echo $unit
+                        # echo $unit
                         let responseAction = await client.sendActions(@[newAction(abilityId = 3674, # Attack
                         unitTags = @[unit.tag],
                                 targetWorldSpacePos = enemySpawn)])
@@ -96,7 +104,7 @@ proc main() {.async.} =
             # Request debug?
             # Send actions
 
-            if gameLoop > cast[uint64](toInt(22.4 * 120)):
+            if gameLoop > (22.4 * 120).uint64:
                 echo "Ending game, game ran for 120 seconds"
                 break
 

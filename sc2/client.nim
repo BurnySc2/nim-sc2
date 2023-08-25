@@ -8,9 +8,12 @@ import ../s2clientprotocol/common_pb
 
 import strformat
 import asyncdispatch
+import logging
 
 import sc2process
 import newType
+
+var logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 type Client* = object
     process*: SC2Process
@@ -34,21 +37,47 @@ proc disconnect*(c: ref Client) =
     c.ws.close
     c.ws = nil
 
+proc validateRequest*(request: Request) =
+    let serialized = serialize(request)
+    var deserialized: Request
+    try:
+        deserialized = newRequest(serialized)
+    except IOError as e:
+        logger.log(lvlError, fmt"Error deserializing the request: {request}")
+        raise e
+    assert $request == $deserialized, fmt"Error, deserializing the serialized request does not result in the same:\n\n{request} \n\n!=\n\n{deserialized}"
+
 proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
+    when not defined(release):
+        # Dont run in release mode
+        validateRequest(request)
     await c.ws.send(serialize(request))
-    let data: seq[byte] = await c.ws.receiveBinaryPacket()
+    var data: seq[byte]
+    try:
+        data = await c.ws.receiveBinaryPacket()
+    except WebSocketClosedError as e:
+        logger.log(lvlError, "Error when receiving response. Request was:")
+        logger.log(lvlError, &"  {request}")
+        raise e
     result = newResponse(data)
     if result.error.len > 0:
-        echo "Respone with error:"
-        echo &"  {result}"
-        echo "Request was:"
-        echo &"  {request}"
+        logger.log(lvlInfo, "Respone with error:")
+        logger.log(lvlInfo, &"  {result}")
+        logger.log(lvlInfo, "Request of previous response was:")
+        logger.log(lvlInfo, &"  {request}")
 
+proc getAvailableMaps*(c: ref Client): Future[Response] {.async.} # Defined later
 proc createGame*(c: ref Client): Future[Response] {.async.} =
     var request = newRequestCreateGame()
     var localMap = newLocalMap()
-    localMap.map_path = "(2)CatalystLE.SC2Map"
-    request.local_map = localMap
+    localMap.mapPath = "(2)CatalystLE.SC2Map"
+
+    # Validate that the requested map is available
+    let mapsResponse = await c.getAvailableMaps
+    let maps = mapsResponse.availableMaps.localMapPaths
+    doAssert maps.contains(localMap.mapPath), fmt"Map '{localMap.mapPath}' was not found. Available maps are: {maps}"
+
+    request.localMap = localMap
     var p1 = newPlayerSetup()
     p1.ftype = PlayerType.Participant
     var p2 = newPlayerSetup()
@@ -58,7 +87,7 @@ proc createGame*(c: ref Client): Future[Response] {.async.} =
     request.playerSetup = @[p1, p2]
     request.realtime = false
     var finalRequest = newRequest()
-    finalRequest.create_game = request
+    finalRequest.createGame = request
     return await c.sendRequest(finalRequest)
 
 proc joinGame*(c: ref Client): Future[Response] {.async.} =
@@ -67,20 +96,37 @@ proc joinGame*(c: ref Client): Future[Response] {.async.} =
     var options = newInterfaceOptions()
     options.raw = true
     options.score = true
-    options.show_cloaked = true
-    options.show_burrowed_shadows = true
-    options.show_placeholders = true
-    options.raw_affects_selection = true
-    options.raw_crop_to_playable_area = true
+    options.showCloaked = true
+    options.showBurrowedShadows = true
+    options.showPlaceholders = true
+    options.rawAffectsSelection = true
+    options.rawCropToPlayableArea = true
     request.options = options
     var finalRequest = newRequest()
-    finalRequest.join_game = request
+    finalRequest.joinGame = request
+    return await c.sendRequest(finalRequest)
+
+proc getAvailableMaps*(c: ref Client): Future[Response] {.async.} =
+    var request = newRequestAvailableMaps()
+    var finalRequest = newRequest()
+    finalRequest.availableMaps = request
     return await c.sendRequest(finalRequest)
 
 proc getGameInfo*(c: ref Client): Future[Response] {.async.} =
     var request = newRequestGameInfo()
     var finalRequest = newRequest()
-    finalRequest.game_info = request
+    finalRequest.gameInfo = request
+    return await c.sendRequest(finalRequest)
+
+proc getGameData*(c: ref Client): Future[Response] {.async.} =
+    var request = newRequestData()
+    request.abilityId = true
+    request.unitTypeId = true
+    request.upgradeId = true
+    request.buffId = true
+    request.effectId = true
+    var finalRequest = newRequest()
+    finalRequest.data = request
     return await c.sendRequest(finalRequest)
 
 proc getObservation*(c: ref Client, gameLoop: uint32): Future[Response] {.async.} =
@@ -96,5 +142,30 @@ proc step*(c: ref Client, count: uint32): Future[Response] {.async.} =
 proc sendActions*(c: ref Client, actions: seq[Action]): Future[Response] {.async.} =
     # Dont send request if actions list empty?
     # assert actions.len <= 1, "Currently crashes when more than 1 action is sent, why?"
-    # echo $actions
+    # logger.log(lvlInfo, fmt"Actions: {actions}")
     return await c.sendRequest(newRequest(request = newRequestAction(actions = actions)))
+
+when isMainModule:
+    var point = newPoint2D()
+    point.x = 10
+    point.y = 20
+    assert $point == $newPoint2D(serialize(point))
+
+    var actionRawUnitCommand = newActionRawUnitCommand()
+    actionRawUnitCommand.abilityId = 1234
+    actionRawUnitCommand.unitTags = @[1234.uint64]
+    actionRawUnitCommand.targetWorldSpacePos = point
+    assert $actionRawUnitCommand == $newActionRawUnitCommand(serialize(actionRawUnitCommand))
+
+    var actionRaw = newActionRaw()
+    actionRaw.unitCommand = actionRawUnitCommand
+    let serialized = serialize(actionRaw)
+    # Fails:
+    let deserialized = newActionRaw(serialized)
+    # Never reached:
+    assert $actionRaw == $deserialized
+
+    # Next test case once the one above works:
+    let action = newAction()
+    action.actionRaw = actionRaw
+    assert $action == $newAction(serialize(action))

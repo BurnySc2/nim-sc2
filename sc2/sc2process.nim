@@ -1,6 +1,9 @@
 import strformat
 import system
 import osproc
+import logging
+
+var logger = newConsoleLogger(fmtStr="[$time] - $levelname: ")
 
 type SC2Process* = object 
     ip*: string
@@ -9,7 +12,7 @@ type SC2Process* = object
     process: Process
 
 proc launch*(p: var SC2Process) =
-    echo "Launching sc2"
+    logger.log(lvlInfo, "Launching sc2")
     p.process = startProcess(
         command = "/usr/bin/wine",
         workingDir = p.cwd,
@@ -19,7 +22,7 @@ proc launch*(p: var SC2Process) =
     )
 
 proc kill(p: SC2Process) =
-    echo "Killing sc2"
+    logger.log(lvlInfo, "Killing sc2")
     p.process.close()
     discard execCmd("/usr/bin/wineserver -k")
 
