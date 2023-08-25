@@ -10,6 +10,7 @@ import strformat
 import asyncdispatch
 
 import sc2process
+import newType
 
 type Client* = object
     process*: SC2Process
@@ -38,10 +39,10 @@ proc sendRequest(c: ref Client, request: Request): Future[Response] {.async.} =
     let data: seq[byte] = await c.ws.receiveBinaryPacket()
     result = newResponse(data)
     if result.error.len > 0:
-        echo result.id
-        echo result.status
-        echo result.error
-
+        echo "Respone with error:"
+        echo &"  {result}"
+        echo "Request was:"
+        echo &"  {request}"
 
 proc createGame*(c: ref Client): Future[Response] {.async.} =
     var request = newRequestCreateGame()
@@ -54,7 +55,7 @@ proc createGame*(c: ref Client): Future[Response] {.async.} =
     p2.ftype = PlayerType.Computer
     p2.race = Race.Terran
     p2.difficulty = Difficulty.VeryHard
-    request.player_setup = @[p1, p2]
+    request.playerSetup = @[p1, p2]
     request.realtime = false
     var finalRequest = newRequest()
     finalRequest.create_game = request
@@ -90,16 +91,10 @@ proc getObservation*(c: ref Client, gameLoop: uint32): Future[Response] {.async.
     return await c.sendRequest(finalRequest)
 
 proc step*(c: ref Client, count: uint32): Future[Response] {.async.} =
-    var request = newRequestStep()
-    request.count = count
-    var finalRequest = newRequest()
-    finalRequest.step = request
-    return await c.sendRequest(finalRequest)
+    return await c.sendRequest(newRequest(request = newRequestStep(count = count)))
 
 proc sendActions*(c: ref Client, actions: seq[Action]): Future[Response] {.async.} =
     # Dont send request if actions list empty?
-    var actionsRequest = newRequestAction()
-    actionsRequest.actions = actions
-    var finalRequest = newRequest()
-    finalRequest.action = actionsRequest
-    return await c.sendRequest(finalRequest)
+    # assert actions.len <= 1, "Currently crashes when more than 1 action is sent, why?"
+    # echo $actions
+    return await c.sendRequest(newRequest(request = newRequestAction(actions = actions)))

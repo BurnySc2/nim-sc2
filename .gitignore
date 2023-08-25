@@ -7,6 +7,8 @@ htmldocs/
 
 # No executables
 bin
+*
+!*/
+!*.*
 
-nimpb_build
 nimpb_build.exe

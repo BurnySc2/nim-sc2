@@ -10,14 +10,15 @@ import strformat
 
 import sc2/sc2process
 import sc2/client
+import sc2/newType
+
+const sendGroupedActions = false
 
 # Start game
 # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/sc2process.py#L139
 const ip = "127.0.0.1"
 const port = "38941"
 const cwd = "/media/ssd480/Games/starcraft3/drive_c/Program Files (x86)/StarCraft II/"
-
-const sendActionsGrouped = false
 
 proc main() {.async.} =
     var process: SC2Process = SC2Process(ip: ip, port: port, cwd: cwd)
@@ -60,58 +61,28 @@ proc main() {.async.} =
             gameLoop = observation.gameLoop
             var raw: ObservationRaw = observation.raw_data
 
-            # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/sc2api.proto#L373
             if gameLoop == 0:
-                when sendActionsGrouped:
-                    # TODO Fix
-                    var actions: seq[Action]
+                when sendGroupedActions:
+                    var unitActions: seq[Action]
                     for i, unit in raw.units:
                         if unit.alliance != Alliance.Self:
                             continue
-                        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/sc2api.proto#L630
-                        var action = newAction()
-                        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/raw.proto#L177C9-L177C18
-                        var actionRaw = newActionRaw()
-                        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/raw.proto#L185
-                        var aRawUnitCommand = newActionRawUnitCommand()
-                        aRawUnitCommand.abilityId = 3674 # Attack
-                        aRawUnitCommand.unitTags = @[unit.tag]
-                        # var target = newPoint2D()
-                        # target.x = 50
-                        # target.y = 50
-                        # aRawUnitCommand.targetWorldSpacePos = target
-                        aRawUnitCommand.targetWorldSpacePos = enemySpawn
-                        actionRaw.unitCommand = aRawUnitCommand
-                        action.actionRaw = actionRaw
-                        # Error if populated!
-                        # action.gameLoop = gameLoop
-                        actions.add(action)
-                    # Send actions
-                    let responseAction = await client.sendActions(actions)
+                        echo $unit
+                        unitActions.add(newAction(abilityId = 3674, # Attack
+                        unitTags = @[unit.tag],
+                                targetWorldSpacePos = enemySpawn))
+                        if unitActions.len > 1:
+                            # Crashes when there are 2 or more units, so for easier debugging stop at 2
+                            break
+                    let responseAction = await client.sendActions(unitActions)
                 else:
                     for i, unit in raw.units:
                         if unit.alliance != Alliance.Self:
                             continue
-                        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/sc2api.proto#L630
-                        var action = newAction()
-                        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/raw.proto#L177C9-L177C18
-                        var actionRaw = newActionRaw()
-                        # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/raw.proto#L185
-                        var aRawUnitCommand = newActionRawUnitCommand()
-                        aRawUnitCommand.abilityId = 3674 # Attack
-                        aRawUnitCommand.unitTags = @[unit.tag]
-                        # var target = newPoint2D()
-                        # target.x = 50
-                        # target.y = 50
-                        # aRawUnitCommand.targetWorldSpacePos = target
-                        aRawUnitCommand.targetWorldSpacePos = enemySpawn
-                        actionRaw.unitCommand = aRawUnitCommand
-                        action.actionRaw = actionRaw
-                        # Error if populated!
-                        # action.gameLoop = gameLoop
-
-                        # Send action, one per unit
-                        let responseAction = await client.sendActions(@[action])
+                        echo $unit
+                        let responseAction = await client.sendActions(@[newAction(abilityId = 3674, # Attack
+                        unitTags = @[unit.tag],
+                                targetWorldSpacePos = enemySpawn)])
 
             # Request step
             let responseStep = await client.step(32)
