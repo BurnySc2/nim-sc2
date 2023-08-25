@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -301,6 +302,17 @@ proc unitIndex*(message: ActionProductionPanelRemoveFromQueue): int32 {.inline.}
 proc `unitIndex=`*(message: ActionProductionPanelRemoveFromQueue, value: int32) {.inline.} =
     setunitIndex(message, value)
 
+proc `$`*(message: ActionProductionPanelRemoveFromQueue): string =
+    runnableExamples:
+        echo $ActionProductionPanelRemoveFromQueue
+        echo fmt"{ActionProductionPanelRemoveFromQueue}"
+        echo &"{ActionProductionPanelRemoveFromQueue}"
+    var resultSeq: seq[string]
+    if message.hasunitIndex:
+        resultSeq.add(&"unitIndex: {message.unitIndex}")
+    result = resultSeq.join(", ")
+    result = &"ActionProductionPanelRemoveFromQueue({result})"
+
 proc sizeOfActionProductionPanelRemoveFromQueue*(message: ActionProductionPanelRemoveFromQueue): uint64 =
     if hasunitIndex(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -375,6 +387,17 @@ proc ftype*(message: ActionSelectIdleWorker): ActionSelectIdleWorker_Type {.inli
 proc `ftype=`*(message: ActionSelectIdleWorker, value: ActionSelectIdleWorker_Type) {.inline.} =
     setftype(message, value)
 
+proc `$`*(message: ActionSelectIdleWorker): string =
+    runnableExamples:
+        echo $ActionSelectIdleWorker
+        echo fmt"{ActionSelectIdleWorker}"
+        echo &"{ActionSelectIdleWorker}"
+    var resultSeq: seq[string]
+    if message.hasftype:
+        resultSeq.add(&"ftype: {message.ftype}")
+    result = resultSeq.join(", ")
+    result = &"ActionSelectIdleWorker({result})"
+
 proc sizeOfActionSelectIdleWorker*(message: ActionSelectIdleWorker): uint64 =
     if hasftype(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -448,6 +471,17 @@ proc unitIndex*(message: ActionCargoPanelUnload): int32 {.inline.} =
 
 proc `unitIndex=`*(message: ActionCargoPanelUnload, value: int32) {.inline.} =
     setunitIndex(message, value)
+
+proc `$`*(message: ActionCargoPanelUnload): string =
+    runnableExamples:
+        echo $ActionCargoPanelUnload
+        echo fmt"{ActionCargoPanelUnload}"
+        echo &"{ActionCargoPanelUnload}"
+    var resultSeq: seq[string]
+    if message.hasunitIndex:
+        resultSeq.add(&"unitIndex: {message.unitIndex}")
+    result = resultSeq.join(", ")
+    result = &"ActionCargoPanelUnload({result})"
 
 proc sizeOfActionCargoPanelUnload*(message: ActionCargoPanelUnload): uint64 =
     if hasunitIndex(message):
@@ -703,6 +737,37 @@ proc maxEnergy*(message: UnitInfo): int32 {.inline.} =
 proc `maxEnergy=`*(message: UnitInfo, value: int32) {.inline.} =
     setmaxEnergy(message, value)
 
+proc `$`*(message: UnitInfo): string =
+    runnableExamples:
+        echo $UnitInfo
+        echo fmt"{UnitInfo}"
+        echo &"{UnitInfo}"
+    var resultSeq: seq[string]
+    if message.hasunitType:
+        resultSeq.add(&"unitType: {message.unitType}")
+    if message.hasplayerRelative:
+        resultSeq.add(&"playerRelative: {message.playerRelative}")
+    if message.hashealth:
+        resultSeq.add(&"health: {message.health}")
+    if message.hasshields:
+        resultSeq.add(&"shields: {message.shields}")
+    if message.hasenergy:
+        resultSeq.add(&"energy: {message.energy}")
+    if message.hastransportSlotsTaken:
+        resultSeq.add(&"transportSlotsTaken: {message.transportSlotsTaken}")
+    if message.hasbuildProgress:
+        resultSeq.add(&"buildProgress: {message.buildProgress}")
+    if message.hasaddOn:
+        resultSeq.add(&"addOn: {message.addOn}")
+    if message.hasmaxHealth:
+        resultSeq.add(&"maxHealth: {message.maxHealth}")
+    if message.hasmaxShields:
+        resultSeq.add(&"maxShields: {message.maxShields}")
+    if message.hasmaxEnergy:
+        resultSeq.add(&"maxEnergy: {message.maxEnergy}")
+    result = resultSeq.join(", ")
+    result = &"UnitInfo({result})"
+
 proc sizeOfUnitInfo*(message: UnitInfo): uint64 =
     if hasunitType(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -933,6 +998,25 @@ proc buffs*(message: SinglePanel): seq[int32] {.inline.} =
 proc `buffs=`*(message: SinglePanel, value: seq[int32]) {.inline.} =
     setbuffs(message, value)
 
+proc `$`*(message: SinglePanel): string =
+    runnableExamples:
+        echo $SinglePanel
+        echo fmt"{SinglePanel}"
+        echo &"{SinglePanel}"
+    var resultSeq: seq[string]
+    if message.hasunit:
+        resultSeq.add(&"unit: {message.unit}")
+    if message.hasattackUpgradeLevel:
+        resultSeq.add(&"attackUpgradeLevel: {message.attackUpgradeLevel}")
+    if message.hasarmorUpgradeLevel:
+        resultSeq.add(&"armorUpgradeLevel: {message.armorUpgradeLevel}")
+    if message.hasshieldUpgradeLevel:
+        resultSeq.add(&"shieldUpgradeLevel: {message.shieldUpgradeLevel}")
+    if message.hasbuffs:
+        resultSeq.add(&"buffs: {message.buffs}")
+    result = resultSeq.join(", ")
+    result = &"SinglePanel({result})"
+
 proc sizeOfSinglePanel*(message: SinglePanel): uint64 =
     if hasunit(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1033,6 +1117,15 @@ proc newActionSelectLarva*(): ActionSelectLarva =
     initMessage(result[])
     result.procs = ActionSelectLarvaProcs()
 
+proc `$`*(message: ActionSelectLarva): string =
+    runnableExamples:
+        echo $ActionSelectLarva
+        echo fmt"{ActionSelectLarva}"
+        echo &"{ActionSelectLarva}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ActionSelectLarva({result})"
+
 proc sizeOfActionSelectLarva*(message: ActionSelectLarva): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -1116,6 +1209,19 @@ proc buildProgress*(message: BuildItem): float32 {.inline.} =
 
 proc `buildProgress=`*(message: BuildItem, value: float32) {.inline.} =
     setbuildProgress(message, value)
+
+proc `$`*(message: BuildItem): string =
+    runnableExamples:
+        echo $BuildItem
+        echo fmt"{BuildItem}"
+        echo &"{BuildItem}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasbuildProgress:
+        resultSeq.add(&"buildProgress: {message.buildProgress}")
+    result = resultSeq.join(", ")
+    result = &"BuildItem({result})"
 
 proc sizeOfBuildItem*(message: BuildItem): uint64 =
     if hasabilityId(message):
@@ -1241,6 +1347,21 @@ proc productionQueue*(message: ProductionPanel): seq[BuildItem] {.inline.} =
 proc `productionQueue=`*(message: ProductionPanel, value: seq[BuildItem]) {.inline.} =
     setproductionQueue(message, value)
 
+proc `$`*(message: ProductionPanel): string =
+    runnableExamples:
+        echo $ProductionPanel
+        echo fmt"{ProductionPanel}"
+        echo &"{ProductionPanel}"
+    var resultSeq: seq[string]
+    if message.hasunit:
+        resultSeq.add(&"unit: {message.unit}")
+    if message.hasbuildQueue:
+        resultSeq.add(&"buildQueue: {message.buildQueue}")
+    if message.hasproductionQueue:
+        resultSeq.add(&"productionQueue: {message.productionQueue}")
+    result = resultSeq.join(", ")
+    result = &"ProductionPanel({result})"
+
 proc sizeOfProductionPanel*(message: ProductionPanel): uint64 =
     if hasunit(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1352,6 +1473,19 @@ proc unitIndex*(message: ActionMultiPanel): int32 {.inline.} =
 proc `unitIndex=`*(message: ActionMultiPanel, value: int32) {.inline.} =
     setunitIndex(message, value)
 
+proc `$`*(message: ActionMultiPanel): string =
+    runnableExamples:
+        echo $ActionMultiPanel
+        echo fmt"{ActionMultiPanel}"
+        echo &"{ActionMultiPanel}"
+    var resultSeq: seq[string]
+    if message.hasftype:
+        resultSeq.add(&"ftype: {message.ftype}")
+    if message.hasunitIndex:
+        resultSeq.add(&"unitIndex: {message.unitIndex}")
+    result = resultSeq.join(", ")
+    result = &"ActionMultiPanel({result})"
+
 proc sizeOfActionMultiPanel*(message: ActionMultiPanel): uint64 =
     if hasftype(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1451,6 +1585,19 @@ proc controlGroupIndex*(message: ActionControlGroup): uint32 {.inline.} =
 
 proc `controlGroupIndex=`*(message: ActionControlGroup, value: uint32) {.inline.} =
     setcontrolGroupIndex(message, value)
+
+proc `$`*(message: ActionControlGroup): string =
+    runnableExamples:
+        echo $ActionControlGroup
+        echo fmt"{ActionControlGroup}"
+        echo &"{ActionControlGroup}"
+    var resultSeq: seq[string]
+    if message.hasaction:
+        resultSeq.add(&"action: {message.action}")
+    if message.hascontrolGroupIndex:
+        resultSeq.add(&"controlGroupIndex: {message.controlGroupIndex}")
+    result = resultSeq.join(", ")
+    result = &"ActionControlGroup({result})"
 
 proc sizeOfActionControlGroup*(message: ActionControlGroup): uint64 =
     if hasaction(message):
@@ -1570,6 +1717,21 @@ proc count*(message: ControlGroup): uint32 {.inline.} =
 proc `count=`*(message: ControlGroup, value: uint32) {.inline.} =
     setcount(message, value)
 
+proc `$`*(message: ControlGroup): string =
+    runnableExamples:
+        echo $ControlGroup
+        echo fmt"{ControlGroup}"
+        echo &"{ControlGroup}"
+    var resultSeq: seq[string]
+    if message.hascontrolGroupIndex:
+        resultSeq.add(&"controlGroupIndex: {message.controlGroupIndex}")
+    if message.hasleaderUnitType:
+        resultSeq.add(&"leaderUnitType: {message.leaderUnitType}")
+    if message.hascount:
+        resultSeq.add(&"count: {message.count}")
+    result = resultSeq.join(", ")
+    result = &"ControlGroup({result})"
+
 proc sizeOfControlGroup*(message: ControlGroup): uint64 =
     if hascontrolGroupIndex(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1662,6 +1824,17 @@ proc units*(message: MultiPanel): seq[UnitInfo] {.inline.} =
 
 proc `units=`*(message: MultiPanel, value: seq[UnitInfo]) {.inline.} =
     setunits(message, value)
+
+proc `$`*(message: MultiPanel): string =
+    runnableExamples:
+        echo $MultiPanel
+        echo fmt"{MultiPanel}"
+        echo &"{MultiPanel}"
+    var resultSeq: seq[string]
+    if message.hasunits:
+        resultSeq.add(&"units: {message.units}")
+    result = resultSeq.join(", ")
+    result = &"MultiPanel({result})"
 
 proc sizeOfMultiPanel*(message: MultiPanel): uint64 =
     for value in message.units:
@@ -1776,6 +1949,21 @@ proc slotsAvailable*(message: CargoPanel): int32 {.inline.} =
 
 proc `slotsAvailable=`*(message: CargoPanel, value: int32) {.inline.} =
     setslotsAvailable(message, value)
+
+proc `$`*(message: CargoPanel): string =
+    runnableExamples:
+        echo $CargoPanel
+        echo fmt"{CargoPanel}"
+        echo &"{CargoPanel}"
+    var resultSeq: seq[string]
+    if message.hasunit:
+        resultSeq.add(&"unit: {message.unit}")
+    if message.haspassengers:
+        resultSeq.add(&"passengers: {message.passengers}")
+    if message.hasslotsAvailable:
+        resultSeq.add(&"slotsAvailable: {message.slotsAvailable}")
+    result = resultSeq.join(", ")
+    result = &"CargoPanel({result})"
 
 proc sizeOfCargoPanel*(message: CargoPanel): uint64 =
     if hasunit(message):
@@ -1961,6 +2149,25 @@ proc production*(message: ObservationUI): ProductionPanel {.inline.} =
 proc `production=`*(message: ObservationUI, value: ProductionPanel) {.inline.} =
     setproduction(message, value)
 
+proc `$`*(message: ObservationUI): string =
+    runnableExamples:
+        echo $ObservationUI
+        echo fmt"{ObservationUI}"
+        echo &"{ObservationUI}"
+    var resultSeq: seq[string]
+    if message.hasgroups:
+        resultSeq.add(&"groups: {message.groups}")
+    if message.hassingle:
+        resultSeq.add(&"single: {message.single}")
+    if message.hasmulti:
+        resultSeq.add(&"multi: {message.multi}")
+    if message.hascargo:
+        resultSeq.add(&"cargo: {message.cargo}")
+    if message.hasproduction:
+        resultSeq.add(&"production: {message.production}")
+    result = resultSeq.join(", ")
+    result = &"ObservationUI({result})"
+
 proc sizeOfObservationUI*(message: ObservationUI): uint64 =
     for value in message.groups:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -2072,6 +2279,17 @@ proc selectionAdd*(message: ActionSelectArmy): bool {.inline.} =
 proc `selectionAdd=`*(message: ActionSelectArmy, value: bool) {.inline.} =
     setselectionAdd(message, value)
 
+proc `$`*(message: ActionSelectArmy): string =
+    runnableExamples:
+        echo $ActionSelectArmy
+        echo fmt"{ActionSelectArmy}"
+        echo &"{ActionSelectArmy}"
+    var resultSeq: seq[string]
+    if message.hasselectionAdd:
+        resultSeq.add(&"selectionAdd: {message.selectionAdd}")
+    result = resultSeq.join(", ")
+    result = &"ActionSelectArmy({result})"
+
 proc sizeOfActionSelectArmy*(message: ActionSelectArmy): uint64 =
     if hasselectionAdd(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -2146,6 +2364,17 @@ proc selectionAdd*(message: ActionSelectWarpGates): bool {.inline.} =
 proc `selectionAdd=`*(message: ActionSelectWarpGates, value: bool) {.inline.} =
     setselectionAdd(message, value)
 
+proc `$`*(message: ActionSelectWarpGates): string =
+    runnableExamples:
+        echo $ActionSelectWarpGates
+        echo fmt"{ActionSelectWarpGates}"
+        echo &"{ActionSelectWarpGates}"
+    var resultSeq: seq[string]
+    if message.hasselectionAdd:
+        resultSeq.add(&"selectionAdd: {message.selectionAdd}")
+    result = resultSeq.join(", ")
+    result = &"ActionSelectWarpGates({result})"
+
 proc sizeOfActionSelectWarpGates*(message: ActionSelectWarpGates): uint64 =
     if hasselectionAdd(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -2219,6 +2448,17 @@ proc abilityId*(message: ActionToggleAutocast): int32 {.inline.} =
 
 proc `abilityId=`*(message: ActionToggleAutocast, value: int32) {.inline.} =
     setabilityId(message, value)
+
+proc `$`*(message: ActionToggleAutocast): string =
+    runnableExamples:
+        echo $ActionToggleAutocast
+        echo fmt"{ActionToggleAutocast}"
+        echo &"{ActionToggleAutocast}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    result = resultSeq.join(", ")
+    result = &"ActionToggleAutocast({result})"
 
 proc sizeOfActionToggleAutocast*(message: ActionToggleAutocast): uint64 =
     if hasabilityId(message):
@@ -2474,6 +2714,33 @@ proc toggleAutocast*(message: ActionUI): ActionToggleAutocast {.inline.} =
 
 proc `toggleAutocast=`*(message: ActionUI, value: ActionToggleAutocast) {.inline.} =
     settoggleAutocast(message, value)
+
+proc `$`*(message: ActionUI): string =
+    runnableExamples:
+        echo $ActionUI
+        echo fmt"{ActionUI}"
+        echo &"{ActionUI}"
+    var resultSeq: seq[string]
+    if message.hascontrolGroup:
+        resultSeq.add(&"controlGroup: {message.controlGroup}")
+    if message.hasselectArmy:
+        resultSeq.add(&"selectArmy: {message.selectArmy}")
+    if message.hasselectWarpGates:
+        resultSeq.add(&"selectWarpGates: {message.selectWarpGates}")
+    if message.hasselectLarva:
+        resultSeq.add(&"selectLarva: {message.selectLarva}")
+    if message.hasselectIdleWorker:
+        resultSeq.add(&"selectIdleWorker: {message.selectIdleWorker}")
+    if message.hasmultiPanel:
+        resultSeq.add(&"multiPanel: {message.multiPanel}")
+    if message.hascargoPanel:
+        resultSeq.add(&"cargoPanel: {message.cargoPanel}")
+    if message.hasproductionPanel:
+        resultSeq.add(&"productionPanel: {message.productionPanel}")
+    if message.hastoggleAutocast:
+        resultSeq.add(&"toggleAutocast: {message.toggleAutocast}")
+    result = resultSeq.join(", ")
+    result = &"ActionUI({result})"
 
 proc sizeOfActionUI*(message: ActionUI): uint64 =
     if hascontrolGroup(message):

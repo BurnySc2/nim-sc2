@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -288,6 +289,21 @@ proc b*(message: Color): uint32 {.inline.} =
 proc `b=`*(message: Color, value: uint32) {.inline.} =
     setb(message, value)
 
+proc `$`*(message: Color): string =
+    runnableExamples:
+        echo $Color
+        echo fmt"{Color}"
+        echo &"{Color}"
+    var resultSeq: seq[string]
+    if message.hasr:
+        resultSeq.add(&"r: {message.r}")
+    if message.hasg:
+        resultSeq.add(&"g: {message.g}")
+    if message.hasb:
+        resultSeq.add(&"b: {message.b}")
+    result = resultSeq.join(", ")
+    result = &"Color({result})"
+
 proc sizeOfColor*(message: Color): uint64 =
     if hasr(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -414,6 +430,21 @@ proc r*(message: DebugSphere): float32 {.inline.} =
 proc `r=`*(message: DebugSphere, value: float32) {.inline.} =
     setr(message, value)
 
+proc `$`*(message: DebugSphere): string =
+    runnableExamples:
+        echo $DebugSphere
+        echo fmt"{DebugSphere}"
+        echo &"{DebugSphere}"
+    var resultSeq: seq[string]
+    if message.hascolor:
+        resultSeq.add(&"color: {message.color}")
+    if message.hasp:
+        resultSeq.add(&"p: {message.p}")
+    if message.hasr:
+        resultSeq.add(&"r: {message.r}")
+    result = resultSeq.join(", ")
+    result = &"DebugSphere({result})"
+
 proc sizeOfDebugSphere*(message: DebugSphere): uint64 =
     if hascolor(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -509,6 +540,17 @@ proc tag*(message: DebugKillUnit): seq[uint64] {.inline.} =
 proc `tag=`*(message: DebugKillUnit, value: seq[uint64]) {.inline.} =
     settag(message, value)
 
+proc `$`*(message: DebugKillUnit): string =
+    runnableExamples:
+        echo $DebugKillUnit
+        echo fmt"{DebugKillUnit}"
+        echo &"{DebugKillUnit}"
+    var resultSeq: seq[string]
+    if message.hastag:
+        resultSeq.add(&"tag: {message.tag}")
+    result = resultSeq.join(", ")
+    result = &"DebugKillUnit({result})"
+
 proc sizeOfDebugKillUnit*(message: DebugKillUnit): uint64 =
     if len(message.tag) > 0:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -593,6 +635,17 @@ proc score*(message: DebugSetScore): float32 {.inline.} =
 
 proc `score=`*(message: DebugSetScore, value: float32) {.inline.} =
     setscore(message, value)
+
+proc `$`*(message: DebugSetScore): string =
+    runnableExamples:
+        echo $DebugSetScore
+        echo fmt"{DebugSetScore}"
+        echo &"{DebugSetScore}"
+    var resultSeq: seq[string]
+    if message.hasscore:
+        resultSeq.add(&"score: {message.score}")
+    result = resultSeq.join(", ")
+    result = &"DebugSetScore({result})"
 
 proc sizeOfDebugSetScore*(message: DebugSetScore): uint64 =
     if hasscore(message):
@@ -704,6 +757,21 @@ proc unitTag*(message: DebugSetUnitValue): uint64 {.inline.} =
 proc `unitTag=`*(message: DebugSetUnitValue, value: uint64) {.inline.} =
     setunitTag(message, value)
 
+proc `$`*(message: DebugSetUnitValue): string =
+    runnableExamples:
+        echo $DebugSetUnitValue
+        echo fmt"{DebugSetUnitValue}"
+        echo &"{DebugSetUnitValue}"
+    var resultSeq: seq[string]
+    if message.hasunitValue:
+        resultSeq.add(&"unitValue: {message.unitValue}")
+    if message.hasvalue:
+        resultSeq.add(&"value: {message.value}")
+    if message.hasunitTag:
+        resultSeq.add(&"unitTag: {message.unitTag}")
+    result = resultSeq.join(", ")
+    result = &"DebugSetUnitValue({result})"
+
 proc sizeOfDebugSetUnitValue*(message: DebugSetUnitValue): uint64 =
     if hasunitValue(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -793,6 +861,17 @@ proc endResult*(message: DebugEndGame): DebugEndGame_EndResult {.inline.} =
 
 proc `endResult=`*(message: DebugEndGame, value: DebugEndGame_EndResult) {.inline.} =
     setendResult(message, value)
+
+proc `$`*(message: DebugEndGame): string =
+    runnableExamples:
+        echo $DebugEndGame
+        echo fmt"{DebugEndGame}"
+        echo &"{DebugEndGame}"
+    var resultSeq: seq[string]
+    if message.hasendResult:
+        resultSeq.add(&"endResult: {message.endResult}")
+    result = resultSeq.join(", ")
+    result = &"DebugEndGame({result})"
 
 proc sizeOfDebugEndGame*(message: DebugEndGame): uint64 =
     if hasendResult(message):
@@ -903,6 +982,21 @@ proc max*(message: DebugBox): Point {.inline.} =
 
 proc `max=`*(message: DebugBox, value: Point) {.inline.} =
     setmax(message, value)
+
+proc `$`*(message: DebugBox): string =
+    runnableExamples:
+        echo $DebugBox
+        echo fmt"{DebugBox}"
+        echo &"{DebugBox}"
+    var resultSeq: seq[string]
+    if message.hascolor:
+        resultSeq.add(&"color: {message.color}")
+    if message.hasmin:
+        resultSeq.add(&"min: {message.min}")
+    if message.hasmax:
+        resultSeq.add(&"max: {message.max}")
+    result = resultSeq.join(", ")
+    result = &"DebugBox({result})"
 
 proc sizeOfDebugBox*(message: DebugBox): uint64 =
     if hascolor(message):
@@ -1069,6 +1163,25 @@ proc size*(message: DebugText): uint32 {.inline.} =
 proc `size=`*(message: DebugText, value: uint32) {.inline.} =
     setsize(message, value)
 
+proc `$`*(message: DebugText): string =
+    runnableExamples:
+        echo $DebugText
+        echo fmt"{DebugText}"
+        echo &"{DebugText}"
+    var resultSeq: seq[string]
+    if message.hascolor:
+        resultSeq.add(&"color: {message.color}")
+    if message.hastext:
+        resultSeq.add(&"text: {message.text}")
+    if message.hasvirtualPos:
+        resultSeq.add(&"virtualPos: {message.virtualPos}")
+    if message.hasworldPos:
+        resultSeq.add(&"worldPos: {message.worldPos}")
+    if message.hassize:
+        resultSeq.add(&"size: {message.size}")
+    result = resultSeq.join(", ")
+    result = &"DebugText({result})"
+
 proc sizeOfDebugText*(message: DebugText): uint64 =
     if hascolor(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1196,6 +1309,19 @@ proc p1*(message: Line): Point {.inline.} =
 proc `p1=`*(message: Line, value: Point) {.inline.} =
     setp1(message, value)
 
+proc `$`*(message: Line): string =
+    runnableExamples:
+        echo $Line
+        echo fmt"{Line}"
+        echo &"{Line}"
+    var resultSeq: seq[string]
+    if message.hasp0:
+        resultSeq.add(&"p0: {message.p0}")
+    if message.hasp1:
+        resultSeq.add(&"p1: {message.p1}")
+    result = resultSeq.join(", ")
+    result = &"Line({result})"
+
 proc sizeOfLine*(message: Line): uint64 =
     if hasp0(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1297,6 +1423,19 @@ proc line*(message: DebugLine): Line {.inline.} =
 
 proc `line=`*(message: DebugLine, value: Line) {.inline.} =
     setline(message, value)
+
+proc `$`*(message: DebugLine): string =
+    runnableExamples:
+        echo $DebugLine
+        echo fmt"{DebugLine}"
+        echo &"{DebugLine}"
+    var resultSeq: seq[string]
+    if message.hascolor:
+        resultSeq.add(&"color: {message.color}")
+    if message.hasline:
+        resultSeq.add(&"line: {message.line}")
+    result = resultSeq.join(", ")
+    result = &"DebugLine({result})"
 
 proc sizeOfDebugLine*(message: DebugLine): uint64 =
     if hascolor(message):
@@ -1447,6 +1586,23 @@ proc spheres*(message: DebugDraw): seq[DebugSphere] {.inline.} =
 
 proc `spheres=`*(message: DebugDraw, value: seq[DebugSphere]) {.inline.} =
     setspheres(message, value)
+
+proc `$`*(message: DebugDraw): string =
+    runnableExamples:
+        echo $DebugDraw
+        echo fmt"{DebugDraw}"
+        echo &"{DebugDraw}"
+    var resultSeq: seq[string]
+    if message.hastext:
+        resultSeq.add(&"text: {message.text}")
+    if message.haslines:
+        resultSeq.add(&"lines: {message.lines}")
+    if message.hasboxes:
+        resultSeq.add(&"boxes: {message.boxes}")
+    if message.hasspheres:
+        resultSeq.add(&"spheres: {message.spheres}")
+    result = resultSeq.join(", ")
+    result = &"DebugDraw({result})"
 
 proc sizeOfDebugDraw*(message: DebugDraw): uint64 =
     for value in message.text:
@@ -1604,6 +1760,23 @@ proc quantity*(message: DebugCreateUnit): uint32 {.inline.} =
 proc `quantity=`*(message: DebugCreateUnit, value: uint32) {.inline.} =
     setquantity(message, value)
 
+proc `$`*(message: DebugCreateUnit): string =
+    runnableExamples:
+        echo $DebugCreateUnit
+        echo fmt"{DebugCreateUnit}"
+        echo &"{DebugCreateUnit}"
+    var resultSeq: seq[string]
+    if message.hasunitType:
+        resultSeq.add(&"unitType: {message.unitType}")
+    if message.hasowner:
+        resultSeq.add(&"owner: {message.owner}")
+    if message.haspos:
+        resultSeq.add(&"pos: {message.pos}")
+    if message.hasquantity:
+        resultSeq.add(&"quantity: {message.quantity}")
+    result = resultSeq.join(", ")
+    result = &"DebugCreateUnit({result})"
+
 proc sizeOfDebugCreateUnit*(message: DebugCreateUnit): uint64 =
     if hasunitType(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1720,6 +1893,19 @@ proc delayMs*(message: DebugTestProcess): int32 {.inline.} =
 
 proc `delayMs=`*(message: DebugTestProcess, value: int32) {.inline.} =
     setdelayMs(message, value)
+
+proc `$`*(message: DebugTestProcess): string =
+    runnableExamples:
+        echo $DebugTestProcess
+        echo fmt"{DebugTestProcess}"
+        echo &"{DebugTestProcess}"
+    var resultSeq: seq[string]
+    if message.hastest:
+        resultSeq.add(&"test: {message.test}")
+    if message.hasdelayMs:
+        resultSeq.add(&"delayMs: {message.delayMs}")
+    result = resultSeq.join(", ")
+    result = &"DebugTestProcess({result})"
 
 proc sizeOfDebugTestProcess*(message: DebugTestProcess): uint64 =
     if hastest(message):
@@ -1961,6 +2147,31 @@ proc unitValue*(message: DebugCommand): DebugSetUnitValue {.inline.} =
 
 proc `unitValue=`*(message: DebugCommand, value: DebugSetUnitValue) {.inline.} =
     setunitValue(message, value)
+
+proc `$`*(message: DebugCommand): string =
+    runnableExamples:
+        echo $DebugCommand
+        echo fmt"{DebugCommand}"
+        echo &"{DebugCommand}"
+    var resultSeq: seq[string]
+    if message.hasdraw:
+        resultSeq.add(&"draw: {message.draw}")
+    if message.hasgameState:
+        resultSeq.add(&"gameState: {message.gameState}")
+    if message.hascreateUnit:
+        resultSeq.add(&"createUnit: {message.createUnit}")
+    if message.haskillUnit:
+        resultSeq.add(&"killUnit: {message.killUnit}")
+    if message.hastestProcess:
+        resultSeq.add(&"testProcess: {message.testProcess}")
+    if message.hasscore:
+        resultSeq.add(&"score: {message.score}")
+    if message.hasendGame:
+        resultSeq.add(&"endGame: {message.endGame}")
+    if message.hasunitValue:
+        resultSeq.add(&"unitValue: {message.unitValue}")
+    result = resultSeq.join(", ")
+    result = &"DebugCommand({result})"
 
 proc sizeOfDebugCommand*(message: DebugCommand): uint64 =
     if hasdraw(message):

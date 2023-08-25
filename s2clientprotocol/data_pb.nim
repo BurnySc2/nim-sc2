@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -203,6 +204,19 @@ proc bonus*(message: DamageBonus): float32 {.inline.} =
 
 proc `bonus=`*(message: DamageBonus, value: float32) {.inline.} =
     setbonus(message, value)
+
+proc `$`*(message: DamageBonus): string =
+    runnableExamples:
+        echo $DamageBonus
+        echo fmt"{DamageBonus}"
+        echo &"{DamageBonus}"
+    var resultSeq: seq[string]
+    if message.hasattribute:
+        resultSeq.add(&"attribute: {message.attribute}")
+    if message.hasbonus:
+        resultSeq.add(&"bonus: {message.bonus}")
+    result = resultSeq.join(", ")
+    result = &"DamageBonus({result})"
 
 proc sizeOfDamageBonus*(message: DamageBonus): uint64 =
     if hasattribute(message):
@@ -538,6 +552,45 @@ proc castRange*(message: AbilityData): float32 {.inline.} =
 proc `castRange=`*(message: AbilityData, value: float32) {.inline.} =
     setcastRange(message, value)
 
+proc `$`*(message: AbilityData): string =
+    runnableExamples:
+        echo $AbilityData
+        echo fmt"{AbilityData}"
+        echo &"{AbilityData}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.haslinkName:
+        resultSeq.add(&"linkName: {message.linkName}")
+    if message.haslinkIndex:
+        resultSeq.add(&"linkIndex: {message.linkIndex}")
+    if message.hasbuttonName:
+        resultSeq.add(&"buttonName: {message.buttonName}")
+    if message.hasfriendlyName:
+        resultSeq.add(&"friendlyName: {message.friendlyName}")
+    if message.hashotkey:
+        resultSeq.add(&"hotkey: {message.hotkey}")
+    if message.hasremapsToAbilityId:
+        resultSeq.add(&"remapsToAbilityId: {message.remapsToAbilityId}")
+    if message.hasavailable:
+        resultSeq.add(&"available: {message.available}")
+    if message.hastarget:
+        resultSeq.add(&"target: {message.target}")
+    if message.hasallowMinimap:
+        resultSeq.add(&"allowMinimap: {message.allowMinimap}")
+    if message.hasallowAutocast:
+        resultSeq.add(&"allowAutocast: {message.allowAutocast}")
+    if message.hasisBuilding:
+        resultSeq.add(&"isBuilding: {message.isBuilding}")
+    if message.hasfootprintRadius:
+        resultSeq.add(&"footprintRadius: {message.footprintRadius}")
+    if message.hasisInstantPlacement:
+        resultSeq.add(&"isInstantPlacement: {message.isInstantPlacement}")
+    if message.hascastRange:
+        resultSeq.add(&"castRange: {message.castRange}")
+    result = resultSeq.join(", ")
+    result = &"AbilityData({result})"
+
 proc sizeOfAbilityData*(message: AbilityData): uint64 =
     if hasabilityId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -814,6 +867,27 @@ proc abilityId*(message: UpgradeData): uint32 {.inline.} =
 proc `abilityId=`*(message: UpgradeData, value: uint32) {.inline.} =
     setabilityId(message, value)
 
+proc `$`*(message: UpgradeData): string =
+    runnableExamples:
+        echo $UpgradeData
+        echo fmt"{UpgradeData}"
+        echo &"{UpgradeData}"
+    var resultSeq: seq[string]
+    if message.hasupgradeId:
+        resultSeq.add(&"upgradeId: {message.upgradeId}")
+    if message.hasname:
+        resultSeq.add(&"name: {message.name}")
+    if message.hasmineralCost:
+        resultSeq.add(&"mineralCost: {message.mineralCost}")
+    if message.hasvespeneCost:
+        resultSeq.add(&"vespeneCost: {message.vespeneCost}")
+    if message.hasresearchTime:
+        resultSeq.add(&"researchTime: {message.researchTime}")
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    result = resultSeq.join(", ")
+    result = &"UpgradeData({result})"
+
 proc sizeOfUpgradeData*(message: UpgradeData): uint64 =
     if hasupgradeId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1020,6 +1094,27 @@ proc speed*(message: Weapon): float32 {.inline.} =
 
 proc `speed=`*(message: Weapon, value: float32) {.inline.} =
     setspeed(message, value)
+
+proc `$`*(message: Weapon): string =
+    runnableExamples:
+        echo $Weapon
+        echo fmt"{Weapon}"
+        echo &"{Weapon}"
+    var resultSeq: seq[string]
+    if message.hasftype:
+        resultSeq.add(&"ftype: {message.ftype}")
+    if message.hasdamage:
+        resultSeq.add(&"damage: {message.damage}")
+    if message.hasdamageBonus:
+        resultSeq.add(&"damageBonus: {message.damageBonus}")
+    if message.hasattacks:
+        resultSeq.add(&"attacks: {message.attacks}")
+    if message.hasrange:
+        resultSeq.add(&"range: {message.range}")
+    if message.hasspeed:
+        resultSeq.add(&"speed: {message.speed}")
+    result = resultSeq.join(", ")
+    result = &"Weapon({result})"
 
 proc sizeOfWeapon*(message: Weapon): uint64 =
     if hasftype(message):
@@ -1523,6 +1618,59 @@ proc weapons*(message: UnitTypeData): seq[Weapon] {.inline.} =
 proc `weapons=`*(message: UnitTypeData, value: seq[Weapon]) {.inline.} =
     setweapons(message, value)
 
+proc `$`*(message: UnitTypeData): string =
+    runnableExamples:
+        echo $UnitTypeData
+        echo fmt"{UnitTypeData}"
+        echo &"{UnitTypeData}"
+    var resultSeq: seq[string]
+    if message.hasunitId:
+        resultSeq.add(&"unitId: {message.unitId}")
+    if message.hasname:
+        resultSeq.add(&"name: {message.name}")
+    if message.hasavailable:
+        resultSeq.add(&"available: {message.available}")
+    if message.hascargoSize:
+        resultSeq.add(&"cargoSize: {message.cargoSize}")
+    if message.hasmineralCost:
+        resultSeq.add(&"mineralCost: {message.mineralCost}")
+    if message.hasvespeneCost:
+        resultSeq.add(&"vespeneCost: {message.vespeneCost}")
+    if message.hasfoodRequired:
+        resultSeq.add(&"foodRequired: {message.foodRequired}")
+    if message.hasfoodProvided:
+        resultSeq.add(&"foodProvided: {message.foodProvided}")
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasrace:
+        resultSeq.add(&"race: {message.race}")
+    if message.hasbuildTime:
+        resultSeq.add(&"buildTime: {message.buildTime}")
+    if message.hashasVespene:
+        resultSeq.add(&"hasVespene: {message.hasVespene}")
+    if message.hashasMinerals:
+        resultSeq.add(&"hasMinerals: {message.hasMinerals}")
+    if message.hassightRange:
+        resultSeq.add(&"sightRange: {message.sightRange}")
+    if message.hastechAlias:
+        resultSeq.add(&"techAlias: {message.techAlias}")
+    if message.hasunitAlias:
+        resultSeq.add(&"unitAlias: {message.unitAlias}")
+    if message.hastechRequirement:
+        resultSeq.add(&"techRequirement: {message.techRequirement}")
+    if message.hasrequireAttached:
+        resultSeq.add(&"requireAttached: {message.requireAttached}")
+    if message.hasattributes:
+        resultSeq.add(&"attributes: {message.attributes}")
+    if message.hasmovementSpeed:
+        resultSeq.add(&"movementSpeed: {message.movementSpeed}")
+    if message.hasarmor:
+        resultSeq.add(&"armor: {message.armor}")
+    if message.hasweapons:
+        resultSeq.add(&"weapons: {message.weapons}")
+    result = resultSeq.join(", ")
+    result = &"UnitTypeData({result})"
+
 proc sizeOfUnitTypeData*(message: UnitTypeData): uint64 =
     if hasunitId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1842,6 +1990,23 @@ proc radius*(message: EffectData): float32 {.inline.} =
 proc `radius=`*(message: EffectData, value: float32) {.inline.} =
     setradius(message, value)
 
+proc `$`*(message: EffectData): string =
+    runnableExamples:
+        echo $EffectData
+        echo fmt"{EffectData}"
+        echo &"{EffectData}"
+    var resultSeq: seq[string]
+    if message.haseffectId:
+        resultSeq.add(&"effectId: {message.effectId}")
+    if message.hasname:
+        resultSeq.add(&"name: {message.name}")
+    if message.hasfriendlyName:
+        resultSeq.add(&"friendlyName: {message.friendlyName}")
+    if message.hasradius:
+        resultSeq.add(&"radius: {message.radius}")
+    result = resultSeq.join(", ")
+    result = &"EffectData({result})"
+
 proc sizeOfEffectData*(message: EffectData): uint64 =
     if haseffectId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1957,6 +2122,19 @@ proc name*(message: BuffData): string {.inline.} =
 
 proc `name=`*(message: BuffData, value: string) {.inline.} =
     setname(message, value)
+
+proc `$`*(message: BuffData): string =
+    runnableExamples:
+        echo $BuffData
+        echo fmt"{BuffData}"
+        echo &"{BuffData}"
+    var resultSeq: seq[string]
+    if message.hasbuffId:
+        resultSeq.add(&"buffId: {message.buffId}")
+    if message.hasname:
+        resultSeq.add(&"name: {message.name}")
+    result = resultSeq.join(", ")
+    result = &"BuffData({result})"
 
 proc sizeOfBuffData*(message: BuffData): uint64 =
     if hasbuffId(message):

@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -335,6 +336,17 @@ proc deadUnits*(message: Event): seq[uint64] {.inline.} =
 proc `deadUnits=`*(message: Event, value: seq[uint64]) {.inline.} =
     setdeadUnits(message, value)
 
+proc `$`*(message: Event): string =
+    runnableExamples:
+        echo $Event
+        echo fmt"{Event}"
+        echo &"{Event}"
+    var resultSeq: seq[string]
+    if message.hasdeadUnits:
+        resultSeq.add(&"deadUnits: {message.deadUnits}")
+    result = resultSeq.join(", ")
+    result = &"Event({result})"
+
 proc sizeOfEvent*(message: Event): uint64 =
     if len(message.deadUnits) > 0:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -513,6 +525,27 @@ proc startLocations*(message: StartRaw): seq[Point2D] {.inline.} =
 proc `startLocations=`*(message: StartRaw, value: seq[Point2D]) {.inline.} =
     setstartLocations(message, value)
 
+proc `$`*(message: StartRaw): string =
+    runnableExamples:
+        echo $StartRaw
+        echo fmt"{StartRaw}"
+        echo &"{StartRaw}"
+    var resultSeq: seq[string]
+    if message.hasmapSize:
+        resultSeq.add(&"mapSize: {message.mapSize}")
+    if message.haspathingGrid:
+        resultSeq.add(&"pathingGrid: {message.pathingGrid}")
+    if message.hasterrainHeight:
+        resultSeq.add(&"terrainHeight: {message.terrainHeight}")
+    if message.hasplacementGrid:
+        resultSeq.add(&"placementGrid: {message.placementGrid}")
+    if message.hasplayableArea:
+        resultSeq.add(&"playableArea: {message.playableArea}")
+    if message.hasstartLocations:
+        resultSeq.add(&"startLocations: {message.startLocations}")
+    result = resultSeq.join(", ")
+    result = &"StartRaw({result})"
+
 proc sizeOfStartRaw*(message: StartRaw): uint64 =
     if hasmapSize(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -651,6 +684,19 @@ proc creep*(message: MapState): ImageData {.inline.} =
 proc `creep=`*(message: MapState, value: ImageData) {.inline.} =
     setcreep(message, value)
 
+proc `$`*(message: MapState): string =
+    runnableExamples:
+        echo $MapState
+        echo fmt"{MapState}"
+        echo &"{MapState}"
+    var resultSeq: seq[string]
+    if message.hasvisibility:
+        resultSeq.add(&"visibility: {message.visibility}")
+    if message.hascreep:
+        resultSeq.add(&"creep: {message.creep}")
+    result = resultSeq.join(", ")
+    result = &"MapState({result})"
+
 proc sizeOfMapState*(message: MapState): uint64 =
     if hasvisibility(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -771,6 +817,21 @@ proc tag*(message: PowerSource): uint64 {.inline.} =
 proc `tag=`*(message: PowerSource, value: uint64) {.inline.} =
     settag(message, value)
 
+proc `$`*(message: PowerSource): string =
+    runnableExamples:
+        echo $PowerSource
+        echo fmt"{PowerSource}"
+        echo &"{PowerSource}"
+    var resultSeq: seq[string]
+    if message.haspos:
+        resultSeq.add(&"pos: {message.pos}")
+    if message.hasradius:
+        resultSeq.add(&"radius: {message.radius}")
+    if message.hastag:
+        resultSeq.add(&"tag: {message.tag}")
+    result = resultSeq.join(", ")
+    result = &"PowerSource({result})"
+
 proc sizeOfPowerSource*(message: PowerSource): uint64 =
     if haspos(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -882,6 +943,19 @@ proc unitTags*(message: ActionRawToggleAutocast): seq[uint64] {.inline.} =
 
 proc `unitTags=`*(message: ActionRawToggleAutocast, value: seq[uint64]) {.inline.} =
     setunitTags(message, value)
+
+proc `$`*(message: ActionRawToggleAutocast): string =
+    runnableExamples:
+        echo $ActionRawToggleAutocast
+        echo fmt"{ActionRawToggleAutocast}"
+        echo &"{ActionRawToggleAutocast}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasunitTags:
+        resultSeq.add(&"unitTags: {message.unitTags}")
+    result = resultSeq.join(", ")
+    result = &"ActionRawToggleAutocast({result})"
 
 proc sizeOfActionRawToggleAutocast*(message: ActionRawToggleAutocast): uint64 =
     if hasabilityId(message):
@@ -1051,6 +1125,25 @@ proc radius*(message: Effect): float32 {.inline.} =
 proc `radius=`*(message: Effect, value: float32) {.inline.} =
     setradius(message, value)
 
+proc `$`*(message: Effect): string =
+    runnableExamples:
+        echo $Effect
+        echo fmt"{Effect}"
+        echo &"{Effect}"
+    var resultSeq: seq[string]
+    if message.haseffectId:
+        resultSeq.add(&"effectId: {message.effectId}")
+    if message.haspos:
+        resultSeq.add(&"pos: {message.pos}")
+    if message.hasalliance:
+        resultSeq.add(&"alliance: {message.alliance}")
+    if message.hasowner:
+        resultSeq.add(&"owner: {message.owner}")
+    if message.hasradius:
+        resultSeq.add(&"radius: {message.radius}")
+    result = resultSeq.join(", ")
+    result = &"Effect({result})"
+
 proc sizeOfEffect*(message: Effect): uint64 =
     if haseffectId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1199,6 +1292,21 @@ proc upgradeIds*(message: PlayerRaw): seq[uint32] {.inline.} =
 
 proc `upgradeIds=`*(message: PlayerRaw, value: seq[uint32]) {.inline.} =
     setupgradeIds(message, value)
+
+proc `$`*(message: PlayerRaw): string =
+    runnableExamples:
+        echo $PlayerRaw
+        echo fmt"{PlayerRaw}"
+        echo &"{PlayerRaw}"
+    var resultSeq: seq[string]
+    if message.haspowerSources:
+        resultSeq.add(&"powerSources: {message.powerSources}")
+    if message.hascamera:
+        resultSeq.add(&"camera: {message.camera}")
+    if message.hasupgradeIds:
+        resultSeq.add(&"upgradeIds: {message.upgradeIds}")
+    result = resultSeq.join(", ")
+    result = &"PlayerRaw({result})"
 
 proc sizeOfPlayerRaw*(message: PlayerRaw): uint64 =
     for value in message.powerSources:
@@ -1366,6 +1474,23 @@ proc progress*(message: UnitOrder): float32 {.inline.} =
 proc `progress=`*(message: UnitOrder, value: float32) {.inline.} =
     setprogress(message, value)
 
+proc `$`*(message: UnitOrder): string =
+    runnableExamples:
+        echo $UnitOrder
+        echo fmt"{UnitOrder}"
+        echo &"{UnitOrder}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasprogress:
+        resultSeq.add(&"progress: {message.progress}")
+    if message.hastargetWorldSpacePos:
+        resultSeq.add(&"targetWorldSpacePos: {message.targetWorldSpacePos}")
+    if message.hastargetUnitTag:
+        resultSeq.add(&"targetUnitTag: {message.targetUnitTag}")
+    result = resultSeq.join(", ")
+    result = &"UnitOrder({result})"
+
 proc sizeOfUnitOrder*(message: UnitOrder): uint64 =
     if hasabilityId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1482,6 +1607,19 @@ proc tag*(message: RallyTarget): uint64 {.inline.} =
 
 proc `tag=`*(message: RallyTarget, value: uint64) {.inline.} =
     settag(message, value)
+
+proc `$`*(message: RallyTarget): string =
+    runnableExamples:
+        echo $RallyTarget
+        echo fmt"{RallyTarget}"
+        echo &"{RallyTarget}"
+    var resultSeq: seq[string]
+    if message.haspoint:
+        resultSeq.add(&"point: {message.point}")
+    if message.hastag:
+        resultSeq.add(&"tag: {message.tag}")
+    result = resultSeq.join(", ")
+    result = &"RallyTarget({result})"
 
 proc sizeOfRallyTarget*(message: RallyTarget): uint64 =
     if haspoint(message):
@@ -1691,6 +1829,31 @@ proc unitType*(message: PassengerUnit): uint32 {.inline.} =
 
 proc `unitType=`*(message: PassengerUnit, value: uint32) {.inline.} =
     setunitType(message, value)
+
+proc `$`*(message: PassengerUnit): string =
+    runnableExamples:
+        echo $PassengerUnit
+        echo fmt"{PassengerUnit}"
+        echo &"{PassengerUnit}"
+    var resultSeq: seq[string]
+    if message.hastag:
+        resultSeq.add(&"tag: {message.tag}")
+    if message.hashealth:
+        resultSeq.add(&"health: {message.health}")
+    if message.hashealthMax:
+        resultSeq.add(&"healthMax: {message.healthMax}")
+    if message.hasshield:
+        resultSeq.add(&"shield: {message.shield}")
+    if message.hasshieldMax:
+        resultSeq.add(&"shieldMax: {message.shieldMax}")
+    if message.hasenergy:
+        resultSeq.add(&"energy: {message.energy}")
+    if message.hasenergyMax:
+        resultSeq.add(&"energyMax: {message.energyMax}")
+    if message.hasunitType:
+        resultSeq.add(&"unitType: {message.unitType}")
+    result = resultSeq.join(", ")
+    result = &"PassengerUnit({result})"
 
 proc sizeOfPassengerUnit*(message: PassengerUnit): uint64 =
     if hastag(message):
@@ -2608,6 +2771,103 @@ proc rallyTargets*(message: Unit): seq[RallyTarget] {.inline.} =
 proc `rallyTargets=`*(message: Unit, value: seq[RallyTarget]) {.inline.} =
     setrallyTargets(message, value)
 
+proc `$`*(message: Unit): string =
+    runnableExamples:
+        echo $Unit
+        echo fmt"{Unit}"
+        echo &"{Unit}"
+    var resultSeq: seq[string]
+    if message.hasdisplayType:
+        resultSeq.add(&"displayType: {message.displayType}")
+    if message.hasalliance:
+        resultSeq.add(&"alliance: {message.alliance}")
+    if message.hastag:
+        resultSeq.add(&"tag: {message.tag}")
+    if message.hasunitType:
+        resultSeq.add(&"unitType: {message.unitType}")
+    if message.hasowner:
+        resultSeq.add(&"owner: {message.owner}")
+    if message.haspos:
+        resultSeq.add(&"pos: {message.pos}")
+    if message.hasfacing:
+        resultSeq.add(&"facing: {message.facing}")
+    if message.hasradius:
+        resultSeq.add(&"radius: {message.radius}")
+    if message.hasbuildProgress:
+        resultSeq.add(&"buildProgress: {message.buildProgress}")
+    if message.hascloak:
+        resultSeq.add(&"cloak: {message.cloak}")
+    if message.hasbuffIds:
+        resultSeq.add(&"buffIds: {message.buffIds}")
+    if message.hasdetectRange:
+        resultSeq.add(&"detectRange: {message.detectRange}")
+    if message.hasradarRange:
+        resultSeq.add(&"radarRange: {message.radarRange}")
+    if message.hasisSelected:
+        resultSeq.add(&"isSelected: {message.isSelected}")
+    if message.hasisOnScreen:
+        resultSeq.add(&"isOnScreen: {message.isOnScreen}")
+    if message.hasisBlip:
+        resultSeq.add(&"isBlip: {message.isBlip}")
+    if message.hasisPowered:
+        resultSeq.add(&"isPowered: {message.isPowered}")
+    if message.hasisActive:
+        resultSeq.add(&"isActive: {message.isActive}")
+    if message.hasattackUpgradeLevel:
+        resultSeq.add(&"attackUpgradeLevel: {message.attackUpgradeLevel}")
+    if message.hasarmorUpgradeLevel:
+        resultSeq.add(&"armorUpgradeLevel: {message.armorUpgradeLevel}")
+    if message.hasshieldUpgradeLevel:
+        resultSeq.add(&"shieldUpgradeLevel: {message.shieldUpgradeLevel}")
+    if message.hashealth:
+        resultSeq.add(&"health: {message.health}")
+    if message.hashealthMax:
+        resultSeq.add(&"healthMax: {message.healthMax}")
+    if message.hasshield:
+        resultSeq.add(&"shield: {message.shield}")
+    if message.hasshieldMax:
+        resultSeq.add(&"shieldMax: {message.shieldMax}")
+    if message.hasenergy:
+        resultSeq.add(&"energy: {message.energy}")
+    if message.hasenergyMax:
+        resultSeq.add(&"energyMax: {message.energyMax}")
+    if message.hasmineralContents:
+        resultSeq.add(&"mineralContents: {message.mineralContents}")
+    if message.hasvespeneContents:
+        resultSeq.add(&"vespeneContents: {message.vespeneContents}")
+    if message.hasisFlying:
+        resultSeq.add(&"isFlying: {message.isFlying}")
+    if message.hasisBurrowed:
+        resultSeq.add(&"isBurrowed: {message.isBurrowed}")
+    if message.hasisHallucination:
+        resultSeq.add(&"isHallucination: {message.isHallucination}")
+    if message.hasorders:
+        resultSeq.add(&"orders: {message.orders}")
+    if message.hasaddOnTag:
+        resultSeq.add(&"addOnTag: {message.addOnTag}")
+    if message.haspassengers:
+        resultSeq.add(&"passengers: {message.passengers}")
+    if message.hascargoSpaceTaken:
+        resultSeq.add(&"cargoSpaceTaken: {message.cargoSpaceTaken}")
+    if message.hascargoSpaceMax:
+        resultSeq.add(&"cargoSpaceMax: {message.cargoSpaceMax}")
+    if message.hasassignedHarvesters:
+        resultSeq.add(&"assignedHarvesters: {message.assignedHarvesters}")
+    if message.hasidealHarvesters:
+        resultSeq.add(&"idealHarvesters: {message.idealHarvesters}")
+    if message.hasweaponCooldown:
+        resultSeq.add(&"weaponCooldown: {message.weaponCooldown}")
+    if message.hasengagedTargetTag:
+        resultSeq.add(&"engagedTargetTag: {message.engagedTargetTag}")
+    if message.hasbuffDurationRemain:
+        resultSeq.add(&"buffDurationRemain: {message.buffDurationRemain}")
+    if message.hasbuffDurationMax:
+        resultSeq.add(&"buffDurationMax: {message.buffDurationMax}")
+    if message.hasrallyTargets:
+        resultSeq.add(&"rallyTargets: {message.rallyTargets}")
+    result = resultSeq.join(", ")
+    result = &"Unit({result})"
+
 proc sizeOfUnit*(message: Unit): uint64 =
     if hasdisplayType(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -3125,6 +3385,25 @@ proc queueCommand*(message: ActionRawUnitCommand): bool {.inline.} =
 proc `queueCommand=`*(message: ActionRawUnitCommand, value: bool) {.inline.} =
     setqueueCommand(message, value)
 
+proc `$`*(message: ActionRawUnitCommand): string =
+    runnableExamples:
+        echo $ActionRawUnitCommand
+        echo fmt"{ActionRawUnitCommand}"
+        echo &"{ActionRawUnitCommand}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasunitTags:
+        resultSeq.add(&"unitTags: {message.unitTags}")
+    if message.hasqueueCommand:
+        resultSeq.add(&"queueCommand: {message.queueCommand}")
+    if message.hastargetWorldSpacePos:
+        resultSeq.add(&"targetWorldSpacePos: {message.targetWorldSpacePos}")
+    if message.hastargetUnitTag:
+        resultSeq.add(&"targetUnitTag: {message.targetUnitTag}")
+    result = resultSeq.join(", ")
+    result = &"ActionRawUnitCommand({result})"
+
 proc sizeOfActionRawUnitCommand*(message: ActionRawUnitCommand): uint64 =
     if hasabilityId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -3242,6 +3521,17 @@ proc centerWorldSpace*(message: ActionRawCameraMove): Point {.inline.} =
 
 proc `centerWorldSpace=`*(message: ActionRawCameraMove, value: Point) {.inline.} =
     setcenterWorldSpace(message, value)
+
+proc `$`*(message: ActionRawCameraMove): string =
+    runnableExamples:
+        echo $ActionRawCameraMove
+        echo fmt"{ActionRawCameraMove}"
+        echo &"{ActionRawCameraMove}"
+    var resultSeq: seq[string]
+    if message.hascenterWorldSpace:
+        resultSeq.add(&"centerWorldSpace: {message.centerWorldSpace}")
+    result = resultSeq.join(", ")
+    result = &"ActionRawCameraMove({result})"
 
 proc sizeOfActionRawCameraMove*(message: ActionRawCameraMove): uint64 =
     if hascenterWorldSpace(message):
@@ -3367,6 +3657,21 @@ proc toggleAutocast*(message: ActionRaw): ActionRawToggleAutocast {.inline.} =
 proc `toggleAutocast=`*(message: ActionRaw, value: ActionRawToggleAutocast) {.inline.} =
     settoggleAutocast(message, value)
 
+proc `$`*(message: ActionRaw): string =
+    runnableExamples:
+        echo $ActionRaw
+        echo fmt"{ActionRaw}"
+        echo &"{ActionRaw}"
+    var resultSeq: seq[string]
+    if message.hasunitCommand:
+        resultSeq.add(&"unitCommand: {message.unitCommand}")
+    if message.hascameraMove:
+        resultSeq.add(&"cameraMove: {message.cameraMove}")
+    if message.hastoggleAutocast:
+        resultSeq.add(&"toggleAutocast: {message.toggleAutocast}")
+    result = resultSeq.join(", ")
+    result = &"ActionRaw({result})"
+
 proc sizeOfActionRaw*(message: ActionRaw): uint64 =
     if hasunitCommand(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -3477,6 +3782,19 @@ proc radius*(message: RadarRing): float32 {.inline.} =
 
 proc `radius=`*(message: RadarRing, value: float32) {.inline.} =
     setradius(message, value)
+
+proc `$`*(message: RadarRing): string =
+    runnableExamples:
+        echo $RadarRing
+        echo fmt"{RadarRing}"
+        echo &"{RadarRing}"
+    var resultSeq: seq[string]
+    if message.haspos:
+        resultSeq.add(&"pos: {message.pos}")
+    if message.hasradius:
+        resultSeq.add(&"radius: {message.radius}")
+    result = resultSeq.join(", ")
+    result = &"RadarRing({result})"
 
 proc sizeOfRadarRing*(message: RadarRing): uint64 =
     if haspos(message):
@@ -3659,6 +3977,27 @@ proc radar*(message: ObservationRaw): seq[RadarRing] {.inline.} =
 
 proc `radar=`*(message: ObservationRaw, value: seq[RadarRing]) {.inline.} =
     setradar(message, value)
+
+proc `$`*(message: ObservationRaw): string =
+    runnableExamples:
+        echo $ObservationRaw
+        echo fmt"{ObservationRaw}"
+        echo &"{ObservationRaw}"
+    var resultSeq: seq[string]
+    if message.hasplayer:
+        resultSeq.add(&"player: {message.player}")
+    if message.hasunits:
+        resultSeq.add(&"units: {message.units}")
+    if message.hasmapState:
+        resultSeq.add(&"mapState: {message.mapState}")
+    if message.hasevent:
+        resultSeq.add(&"event: {message.event}")
+    if message.haseffects:
+        resultSeq.add(&"effects: {message.effects}")
+    if message.hasradar:
+        resultSeq.add(&"radar: {message.radar}")
+    result = resultSeq.join(", ")
+    result = &"ObservationRaw({result})"
 
 proc sizeOfObservationRaw*(message: ObservationRaw): uint64 =
     if hasplayer(message):

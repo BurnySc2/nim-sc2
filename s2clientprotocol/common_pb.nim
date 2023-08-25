@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -145,6 +146,19 @@ proc y*(message: PointI): int32 {.inline.} =
 proc `y=`*(message: PointI, value: int32) {.inline.} =
     sety(message, value)
 
+proc `$`*(message: PointI): string =
+    runnableExamples:
+        echo $PointI
+        echo fmt"{PointI}"
+        echo &"{PointI}"
+    var resultSeq: seq[string]
+    if message.hasx:
+        resultSeq.add(&"x: {message.x}")
+    if message.hasy:
+        resultSeq.add(&"y: {message.y}")
+    result = resultSeq.join(", ")
+    result = &"PointI({result})"
+
 proc sizeOfPointI*(message: PointI): uint64 =
     if hasx(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -244,6 +258,19 @@ proc p1*(message: RectangleI): PointI {.inline.} =
 
 proc `p1=`*(message: RectangleI, value: PointI) {.inline.} =
     setp1(message, value)
+
+proc `$`*(message: RectangleI): string =
+    runnableExamples:
+        echo $RectangleI
+        echo fmt"{RectangleI}"
+        echo &"{RectangleI}"
+    var resultSeq: seq[string]
+    if message.hasp0:
+        resultSeq.add(&"p0: {message.p0}")
+    if message.hasp1:
+        resultSeq.add(&"p1: {message.p1}")
+    result = resultSeq.join(", ")
+    result = &"RectangleI({result})"
 
 proc sizeOfRectangleI*(message: RectangleI): uint64 =
     if hasp0(message):
@@ -347,6 +374,19 @@ proc requiresPoint*(message: AvailableAbility): bool {.inline.} =
 proc `requiresPoint=`*(message: AvailableAbility, value: bool) {.inline.} =
     setrequiresPoint(message, value)
 
+proc `$`*(message: AvailableAbility): string =
+    runnableExamples:
+        echo $AvailableAbility
+        echo fmt"{AvailableAbility}"
+        echo &"{AvailableAbility}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasrequiresPoint:
+        resultSeq.add(&"requiresPoint: {message.requiresPoint}")
+    result = resultSeq.join(", ")
+    result = &"AvailableAbility({result})"
+
 proc sizeOfAvailableAbility*(message: AvailableAbility): uint64 =
     if hasabilityId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -447,6 +487,19 @@ proc y*(message: Point2D): float32 {.inline.} =
 proc `y=`*(message: Point2D, value: float32) {.inline.} =
     sety(message, value)
 
+proc `$`*(message: Point2D): string =
+    runnableExamples:
+        echo $Point2D
+        echo fmt"{Point2D}"
+        echo &"{Point2D}"
+    var resultSeq: seq[string]
+    if message.hasx:
+        resultSeq.add(&"x: {message.x}")
+    if message.hasy:
+        resultSeq.add(&"y: {message.y}")
+    result = resultSeq.join(", ")
+    result = &"Point2D({result})"
+
 proc sizeOfPoint2D*(message: Point2D): uint64 =
     if hasx(message):
         result = result + sizeOfTag(1, WireType.Fixed32)
@@ -546,6 +599,19 @@ proc y*(message: Size2DI): int32 {.inline.} =
 
 proc `y=`*(message: Size2DI, value: int32) {.inline.} =
     sety(message, value)
+
+proc `$`*(message: Size2DI): string =
+    runnableExamples:
+        echo $Size2DI
+        echo fmt"{Size2DI}"
+        echo &"{Size2DI}"
+    var resultSeq: seq[string]
+    if message.hasx:
+        resultSeq.add(&"x: {message.x}")
+    if message.hasy:
+        resultSeq.add(&"y: {message.y}")
+    result = resultSeq.join(", ")
+    result = &"Size2DI({result})"
 
 proc sizeOfSize2DI*(message: Size2DI): uint64 =
     if hasx(message):
@@ -664,6 +730,21 @@ proc data*(message: ImageData): seq[byte] {.inline.} =
 
 proc `data=`*(message: ImageData, value: seq[byte]) {.inline.} =
     setdata(message, value)
+
+proc `$`*(message: ImageData): string =
+    runnableExamples:
+        echo $ImageData
+        echo fmt"{ImageData}"
+        echo &"{ImageData}"
+    var resultSeq: seq[string]
+    if message.hasbitsPerPixel:
+        resultSeq.add(&"bitsPerPixel: {message.bitsPerPixel}")
+    if message.hassize:
+        resultSeq.add(&"size: {message.size}")
+    if message.hasdata:
+        resultSeq.add(&"data: {message.data}")
+    result = resultSeq.join(", ")
+    result = &"ImageData({result})"
 
 proc sizeOfImageData*(message: ImageData): uint64 =
     if hasbitsPerPixel(message):
@@ -791,6 +872,21 @@ proc z*(message: Point): float32 {.inline.} =
 
 proc `z=`*(message: Point, value: float32) {.inline.} =
     setz(message, value)
+
+proc `$`*(message: Point): string =
+    runnableExamples:
+        echo $Point
+        echo fmt"{Point}"
+        echo &"{Point}"
+    var resultSeq: seq[string]
+    if message.hasx:
+        resultSeq.add(&"x: {message.x}")
+    if message.hasy:
+        resultSeq.add(&"y: {message.y}")
+    if message.hasz:
+        resultSeq.add(&"z: {message.z}")
+    result = resultSeq.join(", ")
+    result = &"Point({result})"
 
 proc sizeOfPoint*(message: Point): uint64 =
     if hasx(message):

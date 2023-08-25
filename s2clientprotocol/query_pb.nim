@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -191,6 +192,21 @@ proc endPos*(message: RequestQueryPathing): Point2D {.inline.} =
 proc `endPos=`*(message: RequestQueryPathing, value: Point2D) {.inline.} =
     setendPos(message, value)
 
+proc `$`*(message: RequestQueryPathing): string =
+    runnableExamples:
+        echo $RequestQueryPathing
+        echo fmt"{RequestQueryPathing}"
+        echo &"{RequestQueryPathing}"
+    var resultSeq: seq[string]
+    if message.hasendPos:
+        resultSeq.add(&"endPos: {message.endPos}")
+    if message.hasstartPos:
+        resultSeq.add(&"startPos: {message.startPos}")
+    if message.hasunitTag:
+        resultSeq.add(&"unitTag: {message.unitTag}")
+    result = resultSeq.join(", ")
+    result = &"RequestQueryPathing({result})"
+
 proc sizeOfRequestQueryPathing*(message: RequestQueryPathing): uint64 =
     if hasstartPos(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -282,6 +298,17 @@ proc unitTag*(message: RequestQueryAvailableAbilities): uint64 {.inline.} =
 
 proc `unitTag=`*(message: RequestQueryAvailableAbilities, value: uint64) {.inline.} =
     setunitTag(message, value)
+
+proc `$`*(message: RequestQueryAvailableAbilities): string =
+    runnableExamples:
+        echo $RequestQueryAvailableAbilities
+        echo fmt"{RequestQueryAvailableAbilities}"
+        echo &"{RequestQueryAvailableAbilities}"
+    var resultSeq: seq[string]
+    if message.hasunitTag:
+        resultSeq.add(&"unitTag: {message.unitTag}")
+    result = resultSeq.join(", ")
+    result = &"RequestQueryAvailableAbilities({result})"
 
 proc sizeOfRequestQueryAvailableAbilities*(message: RequestQueryAvailableAbilities): uint64 =
     if hasunitTag(message):
@@ -396,6 +423,21 @@ proc unitTypeId*(message: ResponseQueryAvailableAbilities): uint32 {.inline.} =
 proc `unitTypeId=`*(message: ResponseQueryAvailableAbilities, value: uint32) {.inline.} =
     setunitTypeId(message, value)
 
+proc `$`*(message: ResponseQueryAvailableAbilities): string =
+    runnableExamples:
+        echo $ResponseQueryAvailableAbilities
+        echo fmt"{ResponseQueryAvailableAbilities}"
+        echo &"{ResponseQueryAvailableAbilities}"
+    var resultSeq: seq[string]
+    if message.hasabilities:
+        resultSeq.add(&"abilities: {message.abilities}")
+    if message.hasunitTag:
+        resultSeq.add(&"unitTag: {message.unitTag}")
+    if message.hasunitTypeId:
+        resultSeq.add(&"unitTypeId: {message.unitTypeId}")
+    result = resultSeq.join(", ")
+    result = &"ResponseQueryAvailableAbilities({result})"
+
 proc sizeOfResponseQueryAvailableAbilities*(message: ResponseQueryAvailableAbilities): uint64 =
     for value in message.abilities:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -486,6 +528,17 @@ proc result*(message: ResponseQueryBuildingPlacement): ActionResult {.inline.} =
 
 proc `result=`*(message: ResponseQueryBuildingPlacement, value: ActionResult) {.inline.} =
     setresult(message, value)
+
+proc `$`*(message: ResponseQueryBuildingPlacement): string =
+    runnableExamples:
+        echo $ResponseQueryBuildingPlacement
+        echo fmt"{ResponseQueryBuildingPlacement}"
+        echo &"{ResponseQueryBuildingPlacement}"
+    var resultSeq: seq[string]
+    if message.hasresult:
+        resultSeq.add(&"result: {message.result}")
+    result = resultSeq.join(", ")
+    result = &"ResponseQueryBuildingPlacement({result})"
 
 proc sizeOfResponseQueryBuildingPlacement*(message: ResponseQueryBuildingPlacement): uint64 =
     if hasresult(message):
@@ -597,6 +650,21 @@ proc placingUnitTag*(message: RequestQueryBuildingPlacement): uint64 {.inline.} 
 proc `placingUnitTag=`*(message: RequestQueryBuildingPlacement, value: uint64) {.inline.} =
     setplacingUnitTag(message, value)
 
+proc `$`*(message: RequestQueryBuildingPlacement): string =
+    runnableExamples:
+        echo $RequestQueryBuildingPlacement
+        echo fmt"{RequestQueryBuildingPlacement}"
+        echo &"{RequestQueryBuildingPlacement}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hastargetPos:
+        resultSeq.add(&"targetPos: {message.targetPos}")
+    if message.hasplacingUnitTag:
+        resultSeq.add(&"placingUnitTag: {message.placingUnitTag}")
+    result = resultSeq.join(", ")
+    result = &"RequestQueryBuildingPlacement({result})"
+
 proc sizeOfRequestQueryBuildingPlacement*(message: RequestQueryBuildingPlacement): uint64 =
     if hasabilityId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -687,6 +755,17 @@ proc distance*(message: ResponseQueryPathing): float32 {.inline.} =
 
 proc `distance=`*(message: ResponseQueryPathing, value: float32) {.inline.} =
     setdistance(message, value)
+
+proc `$`*(message: ResponseQueryPathing): string =
+    runnableExamples:
+        echo $ResponseQueryPathing
+        echo fmt"{ResponseQueryPathing}"
+        echo &"{ResponseQueryPathing}"
+    var resultSeq: seq[string]
+    if message.hasdistance:
+        resultSeq.add(&"distance: {message.distance}")
+    result = resultSeq.join(", ")
+    result = &"ResponseQueryPathing({result})"
 
 proc sizeOfResponseQueryPathing*(message: ResponseQueryPathing): uint64 =
     if hasdistance(message):
@@ -806,6 +885,21 @@ proc placements*(message: ResponseQuery): seq[ResponseQueryBuildingPlacement] {.
 
 proc `placements=`*(message: ResponseQuery, value: seq[ResponseQueryBuildingPlacement]) {.inline.} =
     setplacements(message, value)
+
+proc `$`*(message: ResponseQuery): string =
+    runnableExamples:
+        echo $ResponseQuery
+        echo fmt"{ResponseQuery}"
+        echo &"{ResponseQuery}"
+    var resultSeq: seq[string]
+    if message.haspathing:
+        resultSeq.add(&"pathing: {message.pathing}")
+    if message.hasabilities:
+        resultSeq.add(&"abilities: {message.abilities}")
+    if message.hasplacements:
+        resultSeq.add(&"placements: {message.placements}")
+    result = resultSeq.join(", ")
+    result = &"ResponseQuery({result})"
 
 proc sizeOfResponseQuery*(message: ResponseQuery): uint64 =
     for value in message.pathing:
@@ -962,6 +1056,23 @@ proc ignoreResourceRequirements*(message: RequestQuery): bool {.inline.} =
 
 proc `ignoreResourceRequirements=`*(message: RequestQuery, value: bool) {.inline.} =
     setignoreResourceRequirements(message, value)
+
+proc `$`*(message: RequestQuery): string =
+    runnableExamples:
+        echo $RequestQuery
+        echo fmt"{RequestQuery}"
+        echo &"{RequestQuery}"
+    var resultSeq: seq[string]
+    if message.haspathing:
+        resultSeq.add(&"pathing: {message.pathing}")
+    if message.hasabilities:
+        resultSeq.add(&"abilities: {message.abilities}")
+    if message.hasplacements:
+        resultSeq.add(&"placements: {message.placements}")
+    if message.hasignoreResourceRequirements:
+        resultSeq.add(&"ignoreResourceRequirements: {message.ignoreResourceRequirements}")
+    result = resultSeq.join(", ")
+    result = &"RequestQuery({result})"
 
 proc sizeOfRequestQuery*(message: RequestQuery): uint64 =
     for value in message.pathing:

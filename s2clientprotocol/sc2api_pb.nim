@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -1049,6 +1050,17 @@ proc playerId*(message: ActionObserverCameraFollowPlayer): uint32 {.inline.} =
 proc `playerId=`*(message: ActionObserverCameraFollowPlayer, value: uint32) {.inline.} =
     setplayerId(message, value)
 
+proc `$`*(message: ActionObserverCameraFollowPlayer): string =
+    runnableExamples:
+        echo $ActionObserverCameraFollowPlayer
+        echo fmt"{ActionObserverCameraFollowPlayer}"
+        echo &"{ActionObserverCameraFollowPlayer}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    result = resultSeq.join(", ")
+    result = &"ActionObserverCameraFollowPlayer({result})"
+
 proc sizeOfActionObserverCameraFollowPlayer*(message: ActionObserverCameraFollowPlayer): uint64 =
     if hasplayerId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -1122,6 +1134,17 @@ proc playerId*(message: ActionObserverPlayerPerspective): uint32 {.inline.} =
 
 proc `playerId=`*(message: ActionObserverPlayerPerspective, value: uint32) {.inline.} =
     setplayerId(message, value)
+
+proc `$`*(message: ActionObserverPlayerPerspective): string =
+    runnableExamples:
+        echo $ActionObserverPlayerPerspective
+        echo fmt"{ActionObserverPlayerPerspective}"
+        echo &"{ActionObserverPlayerPerspective}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    result = resultSeq.join(", ")
+    result = &"ActionObserverPlayerPerspective({result})"
 
 proc sizeOfActionObserverPlayerPerspective*(message: ActionObserverPlayerPerspective): uint64 =
     if hasplayerId(message):
@@ -1215,6 +1238,19 @@ proc distance*(message: ActionObserverCameraMove): float32 {.inline.} =
 proc `distance=`*(message: ActionObserverCameraMove, value: float32) {.inline.} =
     setdistance(message, value)
 
+proc `$`*(message: ActionObserverCameraMove): string =
+    runnableExamples:
+        echo $ActionObserverCameraMove
+        echo fmt"{ActionObserverCameraMove}"
+        echo &"{ActionObserverCameraMove}"
+    var resultSeq: seq[string]
+    if message.hasworldPos:
+        resultSeq.add(&"worldPos: {message.worldPos}")
+    if message.hasdistance:
+        resultSeq.add(&"distance: {message.distance}")
+    result = resultSeq.join(", ")
+    result = &"ActionObserverCameraMove({result})"
+
 proc sizeOfActionObserverCameraMove*(message: ActionObserverCameraMove): uint64 =
     if hasworldPos(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1300,6 +1336,17 @@ proc unitTags*(message: ActionObserverCameraFollowUnits): seq[uint64] {.inline.}
 
 proc `unitTags=`*(message: ActionObserverCameraFollowUnits, value: seq[uint64]) {.inline.} =
     setunitTags(message, value)
+
+proc `$`*(message: ActionObserverCameraFollowUnits): string =
+    runnableExamples:
+        echo $ActionObserverCameraFollowUnits
+        echo fmt"{ActionObserverCameraFollowUnits}"
+        echo &"{ActionObserverCameraFollowUnits}"
+    var resultSeq: seq[string]
+    if message.hasunitTags:
+        resultSeq.add(&"unitTags: {message.unitTags}")
+    result = resultSeq.join(", ")
+    result = &"ActionObserverCameraFollowUnits({result})"
 
 proc sizeOfActionObserverCameraFollowUnits*(message: ActionObserverCameraFollowUnits): uint64 =
     if len(message.unitTags) > 0:
@@ -1457,6 +1504,23 @@ proc cameraFollowUnits*(message: ObserverAction): ActionObserverCameraFollowUnit
 proc `cameraFollowUnits=`*(message: ObserverAction, value: ActionObserverCameraFollowUnits) {.inline.} =
     setcameraFollowUnits(message, value)
 
+proc `$`*(message: ObserverAction): string =
+    runnableExamples:
+        echo $ObserverAction
+        echo fmt"{ObserverAction}"
+        echo &"{ObserverAction}"
+    var resultSeq: seq[string]
+    if message.hasplayerPerspective:
+        resultSeq.add(&"playerPerspective: {message.playerPerspective}")
+    if message.hascameraMove:
+        resultSeq.add(&"cameraMove: {message.cameraMove}")
+    if message.hascameraFollowPlayer:
+        resultSeq.add(&"cameraFollowPlayer: {message.cameraFollowPlayer}")
+    if message.hascameraFollowUnits:
+        resultSeq.add(&"cameraFollowUnits: {message.cameraFollowUnits}")
+    result = resultSeq.join(", ")
+    result = &"ObserverAction({result})"
+
 proc sizeOfObserverAction*(message: ObserverAction): uint64 =
     if hasplayerPerspective(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1562,6 +1626,17 @@ proc actions*(message: RequestObserverAction): seq[ObserverAction] {.inline.} =
 proc `actions=`*(message: RequestObserverAction, value: seq[ObserverAction]) {.inline.} =
     setactions(message, value)
 
+proc `$`*(message: RequestObserverAction): string =
+    runnableExamples:
+        echo $RequestObserverAction
+        echo fmt"{RequestObserverAction}"
+        echo &"{RequestObserverAction}"
+    var resultSeq: seq[string]
+    if message.hasactions:
+        resultSeq.add(&"actions: {message.actions}")
+    result = resultSeq.join(", ")
+    result = &"RequestObserverAction({result})"
+
 proc sizeOfRequestObserverAction*(message: RequestObserverAction): uint64 =
     for value in message.actions:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1618,6 +1693,15 @@ proc newResponseDebug*(): ResponseDebug =
     new(result)
     initMessage(result[])
     result.procs = ResponseDebugProcs()
+
+proc `$`*(message: ResponseDebug): string =
+    runnableExamples:
+        echo $ResponseDebug
+        echo fmt"{ResponseDebug}"
+        echo &"{ResponseDebug}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ResponseDebug({result})"
 
 proc sizeOfResponseDebug*(message: ResponseDebug): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -1702,6 +1786,19 @@ proc mapData*(message: LocalMap): seq[byte] {.inline.} =
 
 proc `mapData=`*(message: LocalMap, value: seq[byte]) {.inline.} =
     setmapData(message, value)
+
+proc `$`*(message: LocalMap): string =
+    runnableExamples:
+        echo $LocalMap
+        echo fmt"{LocalMap}"
+        echo &"{LocalMap}"
+    var resultSeq: seq[string]
+    if message.hasmapPath:
+        resultSeq.add(&"mapPath: {message.mapPath}")
+    if message.hasmapData:
+        resultSeq.add(&"mapData: {message.mapData}")
+    result = resultSeq.join(", ")
+    result = &"LocalMap({result})"
 
 proc sizeOfLocalMap*(message: LocalMap): uint64 =
     if hasmapPath(message):
@@ -1964,6 +2061,37 @@ proc larvaCount*(message: PlayerCommon): uint32 {.inline.} =
 
 proc `larvaCount=`*(message: PlayerCommon, value: uint32) {.inline.} =
     setlarvaCount(message, value)
+
+proc `$`*(message: PlayerCommon): string =
+    runnableExamples:
+        echo $PlayerCommon
+        echo fmt"{PlayerCommon}"
+        echo &"{PlayerCommon}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.hasminerals:
+        resultSeq.add(&"minerals: {message.minerals}")
+    if message.hasvespene:
+        resultSeq.add(&"vespene: {message.vespene}")
+    if message.hasfoodCap:
+        resultSeq.add(&"foodCap: {message.foodCap}")
+    if message.hasfoodUsed:
+        resultSeq.add(&"foodUsed: {message.foodUsed}")
+    if message.hasfoodArmy:
+        resultSeq.add(&"foodArmy: {message.foodArmy}")
+    if message.hasfoodWorkers:
+        resultSeq.add(&"foodWorkers: {message.foodWorkers}")
+    if message.hasidleWorkerCount:
+        resultSeq.add(&"idleWorkerCount: {message.idleWorkerCount}")
+    if message.hasarmyCount:
+        resultSeq.add(&"armyCount: {message.armyCount}")
+    if message.haswarpGateCount:
+        resultSeq.add(&"warpGateCount: {message.warpGateCount}")
+    if message.haslarvaCount:
+        resultSeq.add(&"larvaCount: {message.larvaCount}")
+    result = resultSeq.join(", ")
+    result = &"PlayerCommon({result})"
 
 proc sizeOfPlayerCommon*(message: PlayerCommon): uint64 =
     if hasplayerId(message):
@@ -2269,6 +2397,33 @@ proc uiData*(message: Observation): ObservationUI {.inline.} =
 proc `uiData=`*(message: Observation, value: ObservationUI) {.inline.} =
     setuiData(message, value)
 
+proc `$`*(message: Observation): string =
+    runnableExamples:
+        echo $Observation
+        echo fmt"{Observation}"
+        echo &"{Observation}"
+    var resultSeq: seq[string]
+    if message.hasgameLoop:
+        resultSeq.add(&"gameLoop: {message.gameLoop}")
+    if message.hasplayerCommon:
+        resultSeq.add(&"playerCommon: {message.playerCommon}")
+    if message.hasalerts:
+        resultSeq.add(&"alerts: {message.alerts}")
+    if message.hasabilities:
+        resultSeq.add(&"abilities: {message.abilities}")
+    if message.hasscore:
+        resultSeq.add(&"score: {message.score}")
+    if message.hasrawData:
+        resultSeq.add(&"rawData: {message.rawData}")
+    if message.hasfeatureLayerData:
+        resultSeq.add(&"featureLayerData: {message.featureLayerData}")
+    if message.hasrenderData:
+        resultSeq.add(&"renderData: {message.renderData}")
+    if message.hasuiData:
+        resultSeq.add(&"uiData: {message.uiData}")
+    result = resultSeq.join(", ")
+    result = &"Observation({result})"
+
 proc sizeOfObservation*(message: Observation): uint64 =
     if hasgameLoop(message):
         result = result + sizeOfTag(9, WireType.Varint)
@@ -2496,6 +2651,25 @@ proc allowCheatingLayers*(message: SpatialCameraSetup): bool {.inline.} =
 
 proc `allowCheatingLayers=`*(message: SpatialCameraSetup, value: bool) {.inline.} =
     setallowCheatingLayers(message, value)
+
+proc `$`*(message: SpatialCameraSetup): string =
+    runnableExamples:
+        echo $SpatialCameraSetup
+        echo fmt"{SpatialCameraSetup}"
+        echo &"{SpatialCameraSetup}"
+    var resultSeq: seq[string]
+    if message.hasresolution:
+        resultSeq.add(&"resolution: {message.resolution}")
+    if message.hasminimapResolution:
+        resultSeq.add(&"minimapResolution: {message.minimapResolution}")
+    if message.haswidth:
+        resultSeq.add(&"width: {message.width}")
+    if message.hascropToPlayableArea:
+        resultSeq.add(&"cropToPlayableArea: {message.cropToPlayableArea}")
+    if message.hasallowCheatingLayers:
+        resultSeq.add(&"allowCheatingLayers: {message.allowCheatingLayers}")
+    result = resultSeq.join(", ")
+    result = &"SpatialCameraSetup({result})"
 
 proc sizeOfSpatialCameraSetup*(message: SpatialCameraSetup): uint64 =
     if hasresolution(message):
@@ -2749,6 +2923,33 @@ proc rawCropToPlayableArea*(message: InterfaceOptions): bool {.inline.} =
 proc `rawCropToPlayableArea=`*(message: InterfaceOptions, value: bool) {.inline.} =
     setrawCropToPlayableArea(message, value)
 
+proc `$`*(message: InterfaceOptions): string =
+    runnableExamples:
+        echo $InterfaceOptions
+        echo fmt"{InterfaceOptions}"
+        echo &"{InterfaceOptions}"
+    var resultSeq: seq[string]
+    if message.hasraw:
+        resultSeq.add(&"raw: {message.raw}")
+    if message.hasscore:
+        resultSeq.add(&"score: {message.score}")
+    if message.hasfeatureLayer:
+        resultSeq.add(&"featureLayer: {message.featureLayer}")
+    if message.hasrender:
+        resultSeq.add(&"render: {message.render}")
+    if message.hasshowCloaked:
+        resultSeq.add(&"showCloaked: {message.showCloaked}")
+    if message.hasshowBurrowedShadows:
+        resultSeq.add(&"showBurrowedShadows: {message.showBurrowedShadows}")
+    if message.hasshowPlaceholders:
+        resultSeq.add(&"showPlaceholders: {message.showPlaceholders}")
+    if message.hasrawAffectsSelection:
+        resultSeq.add(&"rawAffectsSelection: {message.rawAffectsSelection}")
+    if message.hasrawCropToPlayableArea:
+        resultSeq.add(&"rawCropToPlayableArea: {message.rawCropToPlayableArea}")
+    result = resultSeq.join(", ")
+    result = &"InterfaceOptions({result})"
+
 proc sizeOfInterfaceOptions*(message: InterfaceOptions): uint64 =
     if hasraw(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -2871,6 +3072,15 @@ proc newRequestRestartGame*(): RequestRestartGame =
     initMessage(result[])
     result.procs = RequestRestartGameProcs()
 
+proc `$`*(message: RequestRestartGame): string =
+    runnableExamples:
+        echo $RequestRestartGame
+        echo fmt"{RequestRestartGame}"
+        echo &"{RequestRestartGame}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestRestartGame({result})"
+
 proc sizeOfRequestRestartGame*(message: RequestRestartGame): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -2990,6 +3200,23 @@ proc baseBuild*(message: ResponsePing): uint32 {.inline.} =
 
 proc `baseBuild=`*(message: ResponsePing, value: uint32) {.inline.} =
     setbaseBuild(message, value)
+
+proc `$`*(message: ResponsePing): string =
+    runnableExamples:
+        echo $ResponsePing
+        echo fmt"{ResponsePing}"
+        echo &"{ResponsePing}"
+    var resultSeq: seq[string]
+    if message.hasgameVersion:
+        resultSeq.add(&"gameVersion: {message.gameVersion}")
+    if message.hasdataVersion:
+        resultSeq.add(&"dataVersion: {message.dataVersion}")
+    if message.hasdataBuild:
+        resultSeq.add(&"dataBuild: {message.dataBuild}")
+    if message.hasbaseBuild:
+        resultSeq.add(&"baseBuild: {message.baseBuild}")
+    result = resultSeq.join(", ")
+    result = &"ResponsePing({result})"
 
 proc sizeOfResponsePing*(message: ResponsePing): uint64 =
     if hasgameVersion(message):
@@ -3176,6 +3403,25 @@ proc effects*(message: ResponseData): seq[EffectData] {.inline.} =
 proc `effects=`*(message: ResponseData, value: seq[EffectData]) {.inline.} =
     seteffects(message, value)
 
+proc `$`*(message: ResponseData): string =
+    runnableExamples:
+        echo $ResponseData
+        echo fmt"{ResponseData}"
+        echo &"{ResponseData}"
+    var resultSeq: seq[string]
+    if message.hasabilities:
+        resultSeq.add(&"abilities: {message.abilities}")
+    if message.hasunits:
+        resultSeq.add(&"units: {message.units}")
+    if message.hasupgrades:
+        resultSeq.add(&"upgrades: {message.upgrades}")
+    if message.hasbuffs:
+        resultSeq.add(&"buffs: {message.buffs}")
+    if message.haseffects:
+        resultSeq.add(&"effects: {message.effects}")
+    result = resultSeq.join(", ")
+    result = &"ResponseData({result})"
+
 proc sizeOfResponseData*(message: ResponseData): uint64 =
     for value in message.abilities:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -3304,6 +3550,19 @@ proc message*(message: ActionChat): string {.inline.} =
 
 proc `message=`*(message: ActionChat, value: string) {.inline.} =
     setmessage(message, value)
+
+proc `$`*(message: ActionChat): string =
+    runnableExamples:
+        echo $ActionChat
+        echo fmt"{ActionChat}"
+        echo &"{ActionChat}"
+    var resultSeq: seq[string]
+    if message.haschannel:
+        resultSeq.add(&"channel: {message.channel}")
+    if message.hasmessage:
+        resultSeq.add(&"message: {message.message}")
+    result = resultSeq.join(", ")
+    result = &"ActionChat({result})"
 
 proc sizeOfActionChat*(message: ActionChat): uint64 =
     if haschannel(message):
@@ -3477,6 +3736,27 @@ proc gameLoop*(message: Action): uint32 {.inline.} =
 proc `gameLoop=`*(message: Action, value: uint32) {.inline.} =
     setgameLoop(message, value)
 
+proc `$`*(message: Action): string =
+    runnableExamples:
+        echo $Action
+        echo fmt"{Action}"
+        echo &"{Action}"
+    var resultSeq: seq[string]
+    if message.hasactionRaw:
+        resultSeq.add(&"actionRaw: {message.actionRaw}")
+    if message.hasactionFeatureLayer:
+        resultSeq.add(&"actionFeatureLayer: {message.actionFeatureLayer}")
+    if message.hasactionRender:
+        resultSeq.add(&"actionRender: {message.actionRender}")
+    if message.hasactionUi:
+        resultSeq.add(&"actionUi: {message.actionUi}")
+    if message.hasactionChat:
+        resultSeq.add(&"actionChat: {message.actionChat}")
+    if message.hasgameLoop:
+        resultSeq.add(&"gameLoop: {message.gameLoop}")
+    result = resultSeq.join(", ")
+    result = &"Action({result})"
+
 proc sizeOfAction*(message: Action): uint64 =
     if hasactionRaw(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -3614,6 +3894,19 @@ proc message*(message: ChatReceived): string {.inline.} =
 proc `message=`*(message: ChatReceived, value: string) {.inline.} =
     setmessage(message, value)
 
+proc `$`*(message: ChatReceived): string =
+    runnableExamples:
+        echo $ChatReceived
+        echo fmt"{ChatReceived}"
+        echo &"{ChatReceived}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.hasmessage:
+        resultSeq.add(&"message: {message.message}")
+    result = resultSeq.join(", ")
+    result = &"ChatReceived({result})"
+
 proc sizeOfChatReceived*(message: ChatReceived): uint64 =
     if hasplayerId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -3732,6 +4025,21 @@ proc result*(message: ActionError): ActionResult {.inline.} =
 proc `result=`*(message: ActionError, value: ActionResult) {.inline.} =
     setresult(message, value)
 
+proc `$`*(message: ActionError): string =
+    runnableExamples:
+        echo $ActionError
+        echo fmt"{ActionError}"
+        echo &"{ActionError}"
+    var resultSeq: seq[string]
+    if message.hasunitTag:
+        resultSeq.add(&"unitTag: {message.unitTag}")
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasresult:
+        resultSeq.add(&"result: {message.result}")
+    result = resultSeq.join(", ")
+    result = &"ActionError({result})"
+
 proc sizeOfActionError*(message: ActionError): uint64 =
     if hasunitTag(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -3839,6 +4147,19 @@ proc result*(message: PlayerResult): Result {.inline.} =
 
 proc `result=`*(message: PlayerResult, value: Result) {.inline.} =
     setresult(message, value)
+
+proc `$`*(message: PlayerResult): string =
+    runnableExamples:
+        echo $PlayerResult
+        echo fmt"{PlayerResult}"
+        echo &"{PlayerResult}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.hasresult:
+        resultSeq.add(&"result: {message.result}")
+    result = resultSeq.join(", ")
+    result = &"PlayerResult({result})"
 
 proc sizeOfPlayerResult*(message: PlayerResult): uint64 =
     if hasplayerId(message):
@@ -4006,6 +4327,25 @@ proc chat*(message: ResponseObservation): seq[ChatReceived] {.inline.} =
 proc `chat=`*(message: ResponseObservation, value: seq[ChatReceived]) {.inline.} =
     setchat(message, value)
 
+proc `$`*(message: ResponseObservation): string =
+    runnableExamples:
+        echo $ResponseObservation
+        echo fmt"{ResponseObservation}"
+        echo &"{ResponseObservation}"
+    var resultSeq: seq[string]
+    if message.hasactions:
+        resultSeq.add(&"actions: {message.actions}")
+    if message.hasactionErrors:
+        resultSeq.add(&"actionErrors: {message.actionErrors}")
+    if message.hasobservation:
+        resultSeq.add(&"observation: {message.observation}")
+    if message.hasplayerResult:
+        resultSeq.add(&"playerResult: {message.playerResult}")
+    if message.haschat:
+        resultSeq.add(&"chat: {message.chat}")
+    result = resultSeq.join(", ")
+    result = &"ResponseObservation({result})"
+
 proc sizeOfResponseObservation*(message: ResponseObservation): uint64 =
     for value in message.actions:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -4135,6 +4475,19 @@ proc errorDetails*(message: ResponseMapCommand): string {.inline.} =
 proc `errorDetails=`*(message: ResponseMapCommand, value: string) {.inline.} =
     seterrorDetails(message, value)
 
+proc `$`*(message: ResponseMapCommand): string =
+    runnableExamples:
+        echo $ResponseMapCommand
+        echo fmt"{ResponseMapCommand}"
+        echo &"{ResponseMapCommand}"
+    var resultSeq: seq[string]
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.haserrorDetails:
+        resultSeq.add(&"errorDetails: {message.errorDetails}")
+    result = resultSeq.join(", ")
+    result = &"ResponseMapCommand({result})"
+
 proc sizeOfResponseMapCommand*(message: ResponseMapCommand): uint64 =
     if haserror(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -4198,6 +4551,15 @@ proc newRequestQuickLoad*(): RequestQuickLoad =
     new(result)
     initMessage(result[])
     result.procs = RequestQuickLoadProcs()
+
+proc `$`*(message: RequestQuickLoad): string =
+    runnableExamples:
+        echo $RequestQuickLoad
+        echo fmt"{RequestQuickLoad}"
+        echo &"{RequestQuickLoad}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestQuickLoad({result})"
 
 proc sizeOfRequestQuickLoad*(message: RequestQuickLoad): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -4337,6 +4699,25 @@ proc aiBuild*(message: PlayerSetup): AIBuild {.inline.} =
 proc `aiBuild=`*(message: PlayerSetup, value: AIBuild) {.inline.} =
     setaiBuild(message, value)
 
+proc `$`*(message: PlayerSetup): string =
+    runnableExamples:
+        echo $PlayerSetup
+        echo fmt"{PlayerSetup}"
+        echo &"{PlayerSetup}"
+    var resultSeq: seq[string]
+    if message.hasftype:
+        resultSeq.add(&"ftype: {message.ftype}")
+    if message.hasrace:
+        resultSeq.add(&"race: {message.race}")
+    if message.hasdifficulty:
+        resultSeq.add(&"difficulty: {message.difficulty}")
+    if message.hasplayerName:
+        resultSeq.add(&"playerName: {message.playerName}")
+    if message.hasaiBuild:
+        resultSeq.add(&"aiBuild: {message.aiBuild}")
+    result = resultSeq.join(", ")
+    result = &"PlayerSetup({result})"
+
 proc sizeOfPlayerSetup*(message: PlayerSetup): uint64 =
     if hasftype(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -4443,6 +4824,17 @@ proc count*(message: RequestStep): uint32 {.inline.} =
 proc `count=`*(message: RequestStep, value: uint32) {.inline.} =
     setcount(message, value)
 
+proc `$`*(message: RequestStep): string =
+    runnableExamples:
+        echo $RequestStep
+        echo fmt"{RequestStep}"
+        echo &"{RequestStep}"
+    var resultSeq: seq[string]
+    if message.hascount:
+        resultSeq.add(&"count: {message.count}")
+    result = resultSeq.join(", ")
+    result = &"RequestStep({result})"
+
 proc sizeOfRequestStep*(message: RequestStep): uint64 =
     if hascount(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -4517,6 +4909,17 @@ proc triggerCmd*(message: RequestMapCommand): string {.inline.} =
 proc `triggerCmd=`*(message: RequestMapCommand, value: string) {.inline.} =
     settriggerCmd(message, value)
 
+proc `$`*(message: RequestMapCommand): string =
+    runnableExamples:
+        echo $RequestMapCommand
+        echo fmt"{RequestMapCommand}"
+        echo &"{RequestMapCommand}"
+    var resultSeq: seq[string]
+    if message.hastriggerCmd:
+        resultSeq.add(&"triggerCmd: {message.triggerCmd}")
+    result = resultSeq.join(", ")
+    result = &"RequestMapCommand({result})"
+
 proc sizeOfRequestMapCommand*(message: RequestMapCommand): uint64 =
     if hastriggerCmd(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -4590,6 +4993,17 @@ proc error*(message: ResponseSaveMap): ResponseSaveMap_Error {.inline.} =
 
 proc `error=`*(message: ResponseSaveMap, value: ResponseSaveMap_Error) {.inline.} =
     seterror(message, value)
+
+proc `$`*(message: ResponseSaveMap): string =
+    runnableExamples:
+        echo $ResponseSaveMap
+        echo fmt"{ResponseSaveMap}"
+        echo &"{ResponseSaveMap}"
+    var resultSeq: seq[string]
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    result = resultSeq.join(", ")
+    result = &"ResponseSaveMap({result})"
 
 proc sizeOfResponseSaveMap*(message: ResponseSaveMap): uint64 =
     if haserror(message):
@@ -4683,6 +5097,19 @@ proc errorDetails*(message: ResponseCreateGame): string {.inline.} =
 proc `errorDetails=`*(message: ResponseCreateGame, value: string) {.inline.} =
     seterrorDetails(message, value)
 
+proc `$`*(message: ResponseCreateGame): string =
+    runnableExamples:
+        echo $ResponseCreateGame
+        echo fmt"{ResponseCreateGame}"
+        echo &"{ResponseCreateGame}"
+    var resultSeq: seq[string]
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.haserrorDetails:
+        resultSeq.add(&"errorDetails: {message.errorDetails}")
+    result = resultSeq.join(", ")
+    result = &"ResponseCreateGame({result})"
+
 proc sizeOfResponseCreateGame*(message: ResponseCreateGame): uint64 =
     if haserror(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -4746,6 +5173,15 @@ proc newResponseLeaveGame*(): ResponseLeaveGame =
     new(result)
     initMessage(result[])
     result.procs = ResponseLeaveGameProcs()
+
+proc `$`*(message: ResponseLeaveGame): string =
+    runnableExamples:
+        echo $ResponseLeaveGame
+        echo fmt"{ResponseLeaveGame}"
+        echo &"{ResponseLeaveGame}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ResponseLeaveGame({result})"
 
 proc sizeOfResponseLeaveGame*(message: ResponseLeaveGame): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -4920,6 +5356,29 @@ proc playerName*(message: PlayerInfo): string {.inline.} =
 
 proc `playerName=`*(message: PlayerInfo, value: string) {.inline.} =
     setplayerName(message, value)
+
+proc `$`*(message: PlayerInfo): string =
+    runnableExamples:
+        echo $PlayerInfo
+        echo fmt"{PlayerInfo}"
+        echo &"{PlayerInfo}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.hasftype:
+        resultSeq.add(&"ftype: {message.ftype}")
+    if message.hasraceRequested:
+        resultSeq.add(&"raceRequested: {message.raceRequested}")
+    if message.hasraceActual:
+        resultSeq.add(&"raceActual: {message.raceActual}")
+    if message.hasdifficulty:
+        resultSeq.add(&"difficulty: {message.difficulty}")
+    if message.hasaiBuild:
+        resultSeq.add(&"aiBuild: {message.aiBuild}")
+    if message.hasplayerName:
+        resultSeq.add(&"playerName: {message.playerName}")
+    result = resultSeq.join(", ")
+    result = &"PlayerInfo({result})"
 
 proc sizeOfPlayerInfo*(message: PlayerInfo): uint64 =
     if hasplayerId(message):
@@ -5096,6 +5555,23 @@ proc playerApm*(message: PlayerInfoExtra): int32 {.inline.} =
 
 proc `playerApm=`*(message: PlayerInfoExtra, value: int32) {.inline.} =
     setplayerApm(message, value)
+
+proc `$`*(message: PlayerInfoExtra): string =
+    runnableExamples:
+        echo $PlayerInfoExtra
+        echo fmt"{PlayerInfoExtra}"
+        echo &"{PlayerInfoExtra}"
+    var resultSeq: seq[string]
+    if message.hasplayerInfo:
+        resultSeq.add(&"playerInfo: {message.playerInfo}")
+    if message.hasplayerResult:
+        resultSeq.add(&"playerResult: {message.playerResult}")
+    if message.hasplayerMmr:
+        resultSeq.add(&"playerMmr: {message.playerMmr}")
+    if message.hasplayerApm:
+        resultSeq.add(&"playerApm: {message.playerApm}")
+    result = resultSeq.join(", ")
+    result = &"PlayerInfoExtra({result})"
 
 proc sizeOfPlayerInfoExtra*(message: PlayerInfoExtra): uint64 =
     if hasplayerInfo(message):
@@ -5380,6 +5856,37 @@ proc errorDetails*(message: ResponseReplayInfo): string {.inline.} =
 proc `errorDetails=`*(message: ResponseReplayInfo, value: string) {.inline.} =
     seterrorDetails(message, value)
 
+proc `$`*(message: ResponseReplayInfo): string =
+    runnableExamples:
+        echo $ResponseReplayInfo
+        echo fmt"{ResponseReplayInfo}"
+        echo &"{ResponseReplayInfo}"
+    var resultSeq: seq[string]
+    if message.hasmapName:
+        resultSeq.add(&"mapName: {message.mapName}")
+    if message.haslocalMapPath:
+        resultSeq.add(&"localMapPath: {message.localMapPath}")
+    if message.hasplayerInfo:
+        resultSeq.add(&"playerInfo: {message.playerInfo}")
+    if message.hasgameDurationLoops:
+        resultSeq.add(&"gameDurationLoops: {message.gameDurationLoops}")
+    if message.hasgameDurationSeconds:
+        resultSeq.add(&"gameDurationSeconds: {message.gameDurationSeconds}")
+    if message.hasgameVersion:
+        resultSeq.add(&"gameVersion: {message.gameVersion}")
+    if message.hasdataVersion:
+        resultSeq.add(&"dataVersion: {message.dataVersion}")
+    if message.hasdataBuild:
+        resultSeq.add(&"dataBuild: {message.dataBuild}")
+    if message.hasbaseBuild:
+        resultSeq.add(&"baseBuild: {message.baseBuild}")
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.haserrorDetails:
+        resultSeq.add(&"errorDetails: {message.errorDetails}")
+    result = resultSeq.join(", ")
+    result = &"ResponseReplayInfo({result})"
+
 proc sizeOfResponseReplayInfo*(message: ResponseReplayInfo): uint64 =
     if hasmapName(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -5553,6 +6060,19 @@ proc errorDetails*(message: ResponseStartReplay): string {.inline.} =
 proc `errorDetails=`*(message: ResponseStartReplay, value: string) {.inline.} =
     seterrorDetails(message, value)
 
+proc `$`*(message: ResponseStartReplay): string =
+    runnableExamples:
+        echo $ResponseStartReplay
+        echo fmt"{ResponseStartReplay}"
+        echo &"{ResponseStartReplay}"
+    var resultSeq: seq[string]
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.haserrorDetails:
+        resultSeq.add(&"errorDetails: {message.errorDetails}")
+    result = resultSeq.join(", ")
+    result = &"ResponseStartReplay({result})"
+
 proc sizeOfResponseStartReplay*(message: ResponseStartReplay): uint64 =
     if haserror(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -5637,6 +6157,17 @@ proc result*(message: ResponseAction): seq[ActionResult] {.inline.} =
 
 proc `result=`*(message: ResponseAction, value: seq[ActionResult]) {.inline.} =
     setresult(message, value)
+
+proc `$`*(message: ResponseAction): string =
+    runnableExamples:
+        echo $ResponseAction
+        echo fmt"{ResponseAction}"
+        echo &"{ResponseAction}"
+    var resultSeq: seq[string]
+    if message.hasresult:
+        resultSeq.add(&"result: {message.result}")
+    result = resultSeq.join(", ")
+    result = &"ResponseAction({result})"
 
 proc sizeOfResponseAction*(message: ResponseAction): uint64 =
     if len(message.result) > 0:
@@ -5758,6 +6289,21 @@ proc needHardReset*(message: ResponseRestartGame): bool {.inline.} =
 
 proc `needHardReset=`*(message: ResponseRestartGame, value: bool) {.inline.} =
     setneedHardReset(message, value)
+
+proc `$`*(message: ResponseRestartGame): string =
+    runnableExamples:
+        echo $ResponseRestartGame
+        echo fmt"{ResponseRestartGame}"
+        echo &"{ResponseRestartGame}"
+    var resultSeq: seq[string]
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.haserrorDetails:
+        resultSeq.add(&"errorDetails: {message.errorDetails}")
+    if message.hasneedHardReset:
+        resultSeq.add(&"needHardReset: {message.needHardReset}")
+    result = resultSeq.join(", ")
+    result = &"ResponseRestartGame({result})"
 
 proc sizeOfResponseRestartGame*(message: ResponseRestartGame): uint64 =
     if haserror(message):
@@ -5885,6 +6431,21 @@ proc errorDetails*(message: ResponseJoinGame): string {.inline.} =
 proc `errorDetails=`*(message: ResponseJoinGame, value: string) {.inline.} =
     seterrorDetails(message, value)
 
+proc `$`*(message: ResponseJoinGame): string =
+    runnableExamples:
+        echo $ResponseJoinGame
+        echo fmt"{ResponseJoinGame}"
+        echo &"{ResponseJoinGame}"
+    var resultSeq: seq[string]
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.haserrorDetails:
+        resultSeq.add(&"errorDetails: {message.errorDetails}")
+    result = resultSeq.join(", ")
+    result = &"ResponseJoinGame({result})"
+
 proc sizeOfResponseJoinGame*(message: ResponseJoinGame): uint64 =
     if hasplayerId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -5957,6 +6518,15 @@ proc newResponseQuit*(): ResponseQuit =
     initMessage(result[])
     result.procs = ResponseQuitProcs()
 
+proc `$`*(message: ResponseQuit): string =
+    runnableExamples:
+        echo $ResponseQuit
+        echo fmt"{ResponseQuit}"
+        echo &"{ResponseQuit}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ResponseQuit({result})"
+
 proc sizeOfResponseQuit*(message: ResponseQuit): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -6023,6 +6593,17 @@ proc simulationLoop*(message: ResponseStep): uint32 {.inline.} =
 proc `simulationLoop=`*(message: ResponseStep, value: uint32) {.inline.} =
     setsimulationLoop(message, value)
 
+proc `$`*(message: ResponseStep): string =
+    runnableExamples:
+        echo $ResponseStep
+        echo fmt"{ResponseStep}"
+        echo &"{ResponseStep}"
+    var resultSeq: seq[string]
+    if message.hassimulationLoop:
+        resultSeq.add(&"simulationLoop: {message.simulationLoop}")
+    result = resultSeq.join(", ")
+    result = &"ResponseStep({result})"
+
 proc sizeOfResponseStep*(message: ResponseStep): uint64 =
     if hassimulationLoop(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -6078,6 +6659,15 @@ proc newResponseQuickLoad*(): ResponseQuickLoad =
     new(result)
     initMessage(result[])
     result.procs = ResponseQuickLoadProcs()
+
+proc `$`*(message: ResponseQuickLoad): string =
+    runnableExamples:
+        echo $ResponseQuickLoad
+        echo fmt"{ResponseQuickLoad}"
+        echo &"{ResponseQuickLoad}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ResponseQuickLoad({result})"
 
 proc sizeOfResponseQuickLoad*(message: ResponseQuickLoad): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -6145,6 +6735,17 @@ proc data*(message: ResponseSaveReplay): seq[byte] {.inline.} =
 proc `data=`*(message: ResponseSaveReplay, value: seq[byte]) {.inline.} =
     setdata(message, value)
 
+proc `$`*(message: ResponseSaveReplay): string =
+    runnableExamples:
+        echo $ResponseSaveReplay
+        echo fmt"{ResponseSaveReplay}"
+        echo &"{ResponseSaveReplay}"
+    var resultSeq: seq[string]
+    if message.hasdata:
+        resultSeq.add(&"data: {message.data}")
+    result = resultSeq.join(", ")
+    result = &"ResponseSaveReplay({result})"
+
 proc sizeOfResponseSaveReplay*(message: ResponseSaveReplay): uint64 =
     if hasdata(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -6200,6 +6801,15 @@ proc newResponseQuickSave*(): ResponseQuickSave =
     new(result)
     initMessage(result[])
     result.procs = ResponseQuickSaveProcs()
+
+proc `$`*(message: ResponseQuickSave): string =
+    runnableExamples:
+        echo $ResponseQuickSave
+        echo fmt"{ResponseQuickSave}"
+        echo &"{ResponseQuickSave}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ResponseQuickSave({result})"
 
 proc sizeOfResponseQuickSave*(message: ResponseQuickSave): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -6290,6 +6900,19 @@ proc battlenetMapNames*(message: ResponseAvailableMaps): seq[string] {.inline.} 
 
 proc `battlenetMapNames=`*(message: ResponseAvailableMaps, value: seq[string]) {.inline.} =
     setbattlenetMapNames(message, value)
+
+proc `$`*(message: ResponseAvailableMaps): string =
+    runnableExamples:
+        echo $ResponseAvailableMaps
+        echo fmt"{ResponseAvailableMaps}"
+        echo &"{ResponseAvailableMaps}"
+    var resultSeq: seq[string]
+    if message.haslocalMapPaths:
+        resultSeq.add(&"localMapPaths: {message.localMapPaths}")
+    if message.hasbattlenetMapNames:
+        resultSeq.add(&"battlenetMapNames: {message.battlenetMapNames}")
+    result = resultSeq.join(", ")
+    result = &"ResponseAvailableMaps({result})"
 
 proc sizeOfResponseAvailableMaps*(message: ResponseAvailableMaps): uint64 =
     for value in message.localMapPaths:
@@ -6469,6 +7092,27 @@ proc options*(message: ResponseGameInfo): InterfaceOptions {.inline.} =
 proc `options=`*(message: ResponseGameInfo, value: InterfaceOptions) {.inline.} =
     setoptions(message, value)
 
+proc `$`*(message: ResponseGameInfo): string =
+    runnableExamples:
+        echo $ResponseGameInfo
+        echo fmt"{ResponseGameInfo}"
+        echo &"{ResponseGameInfo}"
+    var resultSeq: seq[string]
+    if message.hasmapName:
+        resultSeq.add(&"mapName: {message.mapName}")
+    if message.hasmodNames:
+        resultSeq.add(&"modNames: {message.modNames}")
+    if message.haslocalMapPath:
+        resultSeq.add(&"localMapPath: {message.localMapPath}")
+    if message.hasplayerInfo:
+        resultSeq.add(&"playerInfo: {message.playerInfo}")
+    if message.hasstartRaw:
+        resultSeq.add(&"startRaw: {message.startRaw}")
+    if message.hasoptions:
+        resultSeq.add(&"options: {message.options}")
+    result = resultSeq.join(", ")
+    result = &"ResponseGameInfo({result})"
+
 proc sizeOfResponseGameInfo*(message: ResponseGameInfo): uint64 =
     if hasmapName(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -6567,6 +7211,15 @@ proc newResponseObserverAction*(): ResponseObserverAction =
     new(result)
     initMessage(result[])
     result.procs = ResponseObserverActionProcs()
+
+proc `$`*(message: ResponseObserverAction): string =
+    runnableExamples:
+        echo $ResponseObserverAction
+        echo fmt"{ResponseObserverAction}"
+        echo &"{ResponseObserverAction}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"ResponseObserverAction({result})"
 
 proc sizeOfResponseObserverAction*(message: ResponseObserverAction): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -7158,6 +7811,65 @@ proc status*(message: Response): Status {.inline.} =
 proc `status=`*(message: Response, value: Status) {.inline.} =
     setstatus(message, value)
 
+proc `$`*(message: Response): string =
+    runnableExamples:
+        echo $Response
+        echo fmt"{Response}"
+        echo &"{Response}"
+    var resultSeq: seq[string]
+    if message.hasid:
+        resultSeq.add(&"id: {message.id}")
+    if message.haserror:
+        resultSeq.add(&"error: {message.error}")
+    if message.hasstatus:
+        resultSeq.add(&"status: {message.status}")
+    if message.hascreateGame:
+        resultSeq.add(&"createGame: {message.createGame}")
+    if message.hasjoinGame:
+        resultSeq.add(&"joinGame: {message.joinGame}")
+    if message.hasrestartGame:
+        resultSeq.add(&"restartGame: {message.restartGame}")
+    if message.hasstartReplay:
+        resultSeq.add(&"startReplay: {message.startReplay}")
+    if message.hasleaveGame:
+        resultSeq.add(&"leaveGame: {message.leaveGame}")
+    if message.hasquickSave:
+        resultSeq.add(&"quickSave: {message.quickSave}")
+    if message.hasquickLoad:
+        resultSeq.add(&"quickLoad: {message.quickLoad}")
+    if message.hasquit:
+        resultSeq.add(&"quit: {message.quit}")
+    if message.hasgameInfo:
+        resultSeq.add(&"gameInfo: {message.gameInfo}")
+    if message.hasobservation:
+        resultSeq.add(&"observation: {message.observation}")
+    if message.hasaction:
+        resultSeq.add(&"action: {message.action}")
+    if message.hasobsAction:
+        resultSeq.add(&"obsAction: {message.obsAction}")
+    if message.hasstep:
+        resultSeq.add(&"step: {message.step}")
+    if message.hasdata:
+        resultSeq.add(&"data: {message.data}")
+    if message.hasquery:
+        resultSeq.add(&"query: {message.query}")
+    if message.hassaveReplay:
+        resultSeq.add(&"saveReplay: {message.saveReplay}")
+    if message.hasreplayInfo:
+        resultSeq.add(&"replayInfo: {message.replayInfo}")
+    if message.hasavailableMaps:
+        resultSeq.add(&"availableMaps: {message.availableMaps}")
+    if message.hassaveMap:
+        resultSeq.add(&"saveMap: {message.saveMap}")
+    if message.hasmapCommand:
+        resultSeq.add(&"mapCommand: {message.mapCommand}")
+    if message.hasping:
+        resultSeq.add(&"ping: {message.ping}")
+    if message.hasdebug:
+        resultSeq.add(&"debug: {message.debug}")
+    result = resultSeq.join(", ")
+    result = &"Response({result})"
+
 proc sizeOfResponse*(message: Response): uint64 =
     if hascreateGame(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -7428,6 +8140,15 @@ proc newRequestPing*(): RequestPing =
     initMessage(result[])
     result.procs = RequestPingProcs()
 
+proc `$`*(message: RequestPing): string =
+    runnableExamples:
+        echo $RequestPing
+        echo fmt"{RequestPing}"
+        echo &"{RequestPing}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestPing({result})"
+
 proc sizeOfRequestPing*(message: RequestPing): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -7476,6 +8197,15 @@ proc newRequestQuickSave*(): RequestQuickSave =
     initMessage(result[])
     result.procs = RequestQuickSaveProcs()
 
+proc `$`*(message: RequestQuickSave): string =
+    runnableExamples:
+        echo $RequestQuickSave
+        echo fmt"{RequestQuickSave}"
+        echo &"{RequestQuickSave}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestQuickSave({result})"
+
 proc sizeOfRequestQuickSave*(message: RequestQuickSave): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -7523,6 +8253,15 @@ proc newRequestGameInfo*(): RequestGameInfo =
     new(result)
     initMessage(result[])
     result.procs = RequestGameInfoProcs()
+
+proc `$`*(message: RequestGameInfo): string =
+    runnableExamples:
+        echo $RequestGameInfo
+        echo fmt"{RequestGameInfo}"
+        echo &"{RequestGameInfo}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestGameInfo({result})"
 
 proc sizeOfRequestGameInfo*(message: RequestGameInfo): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -7592,6 +8331,17 @@ proc debug*(message: RequestDebug): seq[DebugCommand] {.inline.} =
 
 proc `debug=`*(message: RequestDebug, value: seq[DebugCommand]) {.inline.} =
     setdebug(message, value)
+
+proc `$`*(message: RequestDebug): string =
+    runnableExamples:
+        echo $RequestDebug
+        echo fmt"{RequestDebug}"
+        echo &"{RequestDebug}"
+    var resultSeq: seq[string]
+    if message.hasdebug:
+        resultSeq.add(&"debug: {message.debug}")
+    result = resultSeq.join(", ")
+    result = &"RequestDebug({result})"
 
 proc sizeOfRequestDebug*(message: RequestDebug): uint64 =
     for value in message.debug:
@@ -7770,6 +8520,27 @@ proc realtime*(message: RequestCreateGame): bool {.inline.} =
 proc `realtime=`*(message: RequestCreateGame, value: bool) {.inline.} =
     setrealtime(message, value)
 
+proc `$`*(message: RequestCreateGame): string =
+    runnableExamples:
+        echo $RequestCreateGame
+        echo fmt"{RequestCreateGame}"
+        echo &"{RequestCreateGame}"
+    var resultSeq: seq[string]
+    if message.hasplayerSetup:
+        resultSeq.add(&"playerSetup: {message.playerSetup}")
+    if message.hasdisableFog:
+        resultSeq.add(&"disableFog: {message.disableFog}")
+    if message.hasrandomSeed:
+        resultSeq.add(&"randomSeed: {message.randomSeed}")
+    if message.hasrealtime:
+        resultSeq.add(&"realtime: {message.realtime}")
+    if message.haslocalMap:
+        resultSeq.add(&"localMap: {message.localMap}")
+    if message.hasbattlenetMapName:
+        resultSeq.add(&"battlenetMapName: {message.battlenetMapName}")
+    result = resultSeq.join(", ")
+    result = &"RequestCreateGame({result})"
+
 proc sizeOfRequestCreateGame*(message: RequestCreateGame): uint64 =
     if haslocalMap(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -7931,6 +8702,21 @@ proc downloadData*(message: RequestReplayInfo): bool {.inline.} =
 proc `downloadData=`*(message: RequestReplayInfo, value: bool) {.inline.} =
     setdownloadData(message, value)
 
+proc `$`*(message: RequestReplayInfo): string =
+    runnableExamples:
+        echo $RequestReplayInfo
+        echo fmt"{RequestReplayInfo}"
+        echo &"{RequestReplayInfo}"
+    var resultSeq: seq[string]
+    if message.hasdownloadData:
+        resultSeq.add(&"downloadData: {message.downloadData}")
+    if message.hasreplayPath:
+        resultSeq.add(&"replayPath: {message.replayPath}")
+    if message.hasreplayData:
+        resultSeq.add(&"replayData: {message.replayData}")
+    result = resultSeq.join(", ")
+    result = &"RequestReplayInfo({result})"
+
 proc sizeOfRequestReplayInfo*(message: RequestReplayInfo): uint64 =
     if hasreplayPath(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -8039,6 +8825,19 @@ proc mapData*(message: RequestSaveMap): seq[byte] {.inline.} =
 proc `mapData=`*(message: RequestSaveMap, value: seq[byte]) {.inline.} =
     setmapData(message, value)
 
+proc `$`*(message: RequestSaveMap): string =
+    runnableExamples:
+        echo $RequestSaveMap
+        echo fmt"{RequestSaveMap}"
+        echo &"{RequestSaveMap}"
+    var resultSeq: seq[string]
+    if message.hasmapPath:
+        resultSeq.add(&"mapPath: {message.mapPath}")
+    if message.hasmapData:
+        resultSeq.add(&"mapData: {message.mapData}")
+    result = resultSeq.join(", ")
+    result = &"RequestSaveMap({result})"
+
 proc sizeOfRequestSaveMap*(message: RequestSaveMap): uint64 =
     if hasmapPath(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -8103,6 +8902,15 @@ proc newRequestQuit*(): RequestQuit =
     initMessage(result[])
     result.procs = RequestQuitProcs()
 
+proc `$`*(message: RequestQuit): string =
+    runnableExamples:
+        echo $RequestQuit
+        echo fmt"{RequestQuit}"
+        echo &"{RequestQuit}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestQuit({result})"
+
 proc sizeOfRequestQuit*(message: RequestQuit): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -8150,6 +8958,15 @@ proc newRequestAvailableMaps*(): RequestAvailableMaps =
     new(result)
     initMessage(result[])
     result.procs = RequestAvailableMapsProcs()
+
+proc `$`*(message: RequestAvailableMaps): string =
+    runnableExamples:
+        echo $RequestAvailableMaps
+        echo fmt"{RequestAvailableMaps}"
+        echo &"{RequestAvailableMaps}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestAvailableMaps({result})"
 
 proc sizeOfRequestAvailableMaps*(message: RequestAvailableMaps): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -8199,6 +9016,15 @@ proc newRequestLeaveGame*(): RequestLeaveGame =
     initMessage(result[])
     result.procs = RequestLeaveGameProcs()
 
+proc `$`*(message: RequestLeaveGame): string =
+    runnableExamples:
+        echo $RequestLeaveGame
+        echo fmt"{RequestLeaveGame}"
+        echo &"{RequestLeaveGame}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestLeaveGame({result})"
+
 proc sizeOfRequestLeaveGame*(message: RequestLeaveGame): uint64 =
     result = result + sizeOfUnknownFields(message)
 
@@ -8246,6 +9072,15 @@ proc newRequestSaveReplay*(): RequestSaveReplay =
     new(result)
     initMessage(result[])
     result.procs = RequestSaveReplayProcs()
+
+proc `$`*(message: RequestSaveReplay): string =
+    runnableExamples:
+        echo $RequestSaveReplay
+        echo fmt"{RequestSaveReplay}"
+        echo &"{RequestSaveReplay}"
+    var resultSeq: seq[string]
+    result = resultSeq.join(", ")
+    result = &"RequestSaveReplay({result})"
 
 proc sizeOfRequestSaveReplay*(message: RequestSaveReplay): uint64 =
     result = result + sizeOfUnknownFields(message)
@@ -8315,6 +9150,17 @@ proc actions*(message: RequestAction): seq[Action] {.inline.} =
 
 proc `actions=`*(message: RequestAction, value: seq[Action]) {.inline.} =
     setactions(message, value)
+
+proc `$`*(message: RequestAction): string =
+    runnableExamples:
+        echo $RequestAction
+        echo fmt"{RequestAction}"
+        echo &"{RequestAction}"
+    var resultSeq: seq[string]
+    if message.hasactions:
+        resultSeq.add(&"actions: {message.actions}")
+    result = resultSeq.join(", ")
+    result = &"RequestAction({result})"
 
 proc sizeOfRequestAction*(message: RequestAction): uint64 =
     for value in message.actions:
@@ -8526,6 +9372,31 @@ proc recordReplay*(message: RequestStartReplay): bool {.inline.} =
 proc `recordReplay=`*(message: RequestStartReplay, value: bool) {.inline.} =
     setrecordReplay(message, value)
 
+proc `$`*(message: RequestStartReplay): string =
+    runnableExamples:
+        echo $RequestStartReplay
+        echo fmt"{RequestStartReplay}"
+        echo &"{RequestStartReplay}"
+    var resultSeq: seq[string]
+    if message.hasmapData:
+        resultSeq.add(&"mapData: {message.mapData}")
+    if message.hasobservedPlayerId:
+        resultSeq.add(&"observedPlayerId: {message.observedPlayerId}")
+    if message.hasoptions:
+        resultSeq.add(&"options: {message.options}")
+    if message.hasdisableFog:
+        resultSeq.add(&"disableFog: {message.disableFog}")
+    if message.hasrealtime:
+        resultSeq.add(&"realtime: {message.realtime}")
+    if message.hasrecordReplay:
+        resultSeq.add(&"recordReplay: {message.recordReplay}")
+    if message.hasreplayPath:
+        resultSeq.add(&"replayPath: {message.replayPath}")
+    if message.hasreplayData:
+        resultSeq.add(&"replayData: {message.replayData}")
+    result = resultSeq.join(", ")
+    result = &"RequestStartReplay({result})"
+
 proc sizeOfRequestStartReplay*(message: RequestStartReplay): uint64 =
     if hasreplayPath(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -8729,6 +9600,25 @@ proc effectId*(message: RequestData): bool {.inline.} =
 proc `effectId=`*(message: RequestData, value: bool) {.inline.} =
     seteffectId(message, value)
 
+proc `$`*(message: RequestData): string =
+    runnableExamples:
+        echo $RequestData
+        echo fmt"{RequestData}"
+        echo &"{RequestData}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasunitTypeId:
+        resultSeq.add(&"unitTypeId: {message.unitTypeId}")
+    if message.hasupgradeId:
+        resultSeq.add(&"upgradeId: {message.upgradeId}")
+    if message.hasbuffId:
+        resultSeq.add(&"buffId: {message.buffId}")
+    if message.haseffectId:
+        resultSeq.add(&"effectId: {message.effectId}")
+    result = resultSeq.join(", ")
+    result = &"RequestData({result})"
+
 proc sizeOfRequestData*(message: RequestData): uint64 =
     if hasabilityId(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -8852,6 +9742,19 @@ proc basePort*(message: PortSet): int32 {.inline.} =
 
 proc `basePort=`*(message: PortSet, value: int32) {.inline.} =
     setbasePort(message, value)
+
+proc `$`*(message: PortSet): string =
+    runnableExamples:
+        echo $PortSet
+        echo fmt"{PortSet}"
+        echo &"{PortSet}"
+    var resultSeq: seq[string]
+    if message.hasgamePort:
+        resultSeq.add(&"gamePort: {message.gamePort}")
+    if message.hasbasePort:
+        resultSeq.add(&"basePort: {message.basePort}")
+    result = resultSeq.join(", ")
+    result = &"PortSet({result})"
 
 proc sizeOfPortSet*(message: PortSet): uint64 =
     if hasgamePort(message):
@@ -9073,6 +9976,31 @@ proc hostIp*(message: RequestJoinGame): string {.inline.} =
 proc `hostIp=`*(message: RequestJoinGame, value: string) {.inline.} =
     sethostIp(message, value)
 
+proc `$`*(message: RequestJoinGame): string =
+    runnableExamples:
+        echo $RequestJoinGame
+        echo fmt"{RequestJoinGame}"
+        echo &"{RequestJoinGame}"
+    var resultSeq: seq[string]
+    if message.hasoptions:
+        resultSeq.add(&"options: {message.options}")
+    if message.hasserverPorts:
+        resultSeq.add(&"serverPorts: {message.serverPorts}")
+    if message.hasclientPorts:
+        resultSeq.add(&"clientPorts: {message.clientPorts}")
+    if message.hassharedPort:
+        resultSeq.add(&"sharedPort: {message.sharedPort}")
+    if message.hasplayerName:
+        resultSeq.add(&"playerName: {message.playerName}")
+    if message.hashostIp:
+        resultSeq.add(&"hostIp: {message.hostIp}")
+    if message.hasrace:
+        resultSeq.add(&"race: {message.race}")
+    if message.hasobservedPlayerId:
+        resultSeq.add(&"observedPlayerId: {message.observedPlayerId}")
+    result = resultSeq.join(", ")
+    result = &"RequestJoinGame({result})"
+
 proc sizeOfRequestJoinGame*(message: RequestJoinGame): uint64 =
     if hasrace(message):
         result = result + sizeOfTag(1, WireType.Varint)
@@ -9223,6 +10151,19 @@ proc gameLoop*(message: RequestObservation): uint32 {.inline.} =
 
 proc `gameLoop=`*(message: RequestObservation, value: uint32) {.inline.} =
     setgameLoop(message, value)
+
+proc `$`*(message: RequestObservation): string =
+    runnableExamples:
+        echo $RequestObservation
+        echo fmt"{RequestObservation}"
+        echo &"{RequestObservation}"
+    var resultSeq: seq[string]
+    if message.hasdisableFog:
+        resultSeq.add(&"disableFog: {message.disableFog}")
+    if message.hasgameLoop:
+        resultSeq.add(&"gameLoop: {message.gameLoop}")
+    result = resultSeq.join(", ")
+    result = &"RequestObservation({result})"
 
 proc sizeOfRequestObservation*(message: RequestObservation): uint64 =
     if hasdisableFog(message):
@@ -9790,6 +10731,61 @@ proc id*(message: Request): uint32 {.inline.} =
 
 proc `id=`*(message: Request, value: uint32) {.inline.} =
     setid(message, value)
+
+proc `$`*(message: Request): string =
+    runnableExamples:
+        echo $Request
+        echo fmt"{Request}"
+        echo &"{Request}"
+    var resultSeq: seq[string]
+    if message.hasid:
+        resultSeq.add(&"id: {message.id}")
+    if message.hascreateGame:
+        resultSeq.add(&"createGame: {message.createGame}")
+    if message.hasjoinGame:
+        resultSeq.add(&"joinGame: {message.joinGame}")
+    if message.hasrestartGame:
+        resultSeq.add(&"restartGame: {message.restartGame}")
+    if message.hasstartReplay:
+        resultSeq.add(&"startReplay: {message.startReplay}")
+    if message.hasleaveGame:
+        resultSeq.add(&"leaveGame: {message.leaveGame}")
+    if message.hasquickSave:
+        resultSeq.add(&"quickSave: {message.quickSave}")
+    if message.hasquickLoad:
+        resultSeq.add(&"quickLoad: {message.quickLoad}")
+    if message.hasquit:
+        resultSeq.add(&"quit: {message.quit}")
+    if message.hasgameInfo:
+        resultSeq.add(&"gameInfo: {message.gameInfo}")
+    if message.hasobservation:
+        resultSeq.add(&"observation: {message.observation}")
+    if message.hasaction:
+        resultSeq.add(&"action: {message.action}")
+    if message.hasobsAction:
+        resultSeq.add(&"obsAction: {message.obsAction}")
+    if message.hasstep:
+        resultSeq.add(&"step: {message.step}")
+    if message.hasdata:
+        resultSeq.add(&"data: {message.data}")
+    if message.hasquery:
+        resultSeq.add(&"query: {message.query}")
+    if message.hassaveReplay:
+        resultSeq.add(&"saveReplay: {message.saveReplay}")
+    if message.hasmapCommand:
+        resultSeq.add(&"mapCommand: {message.mapCommand}")
+    if message.hasreplayInfo:
+        resultSeq.add(&"replayInfo: {message.replayInfo}")
+    if message.hasavailableMaps:
+        resultSeq.add(&"availableMaps: {message.availableMaps}")
+    if message.hassaveMap:
+        resultSeq.add(&"saveMap: {message.saveMap}")
+    if message.hasping:
+        resultSeq.add(&"ping: {message.ping}")
+    if message.hasdebug:
+        resultSeq.add(&"debug: {message.debug}")
+    result = resultSeq.join(", ")
+    result = &"Request({result})"
 
 proc sizeOfRequest*(message: Request): uint64 =
     if hascreateGame(message):

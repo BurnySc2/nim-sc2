@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -192,6 +193,25 @@ proc upgrade*(message: CategoryScoreDetails): float32 {.inline.} =
 proc `upgrade=`*(message: CategoryScoreDetails, value: float32) {.inline.} =
     setupgrade(message, value)
 
+proc `$`*(message: CategoryScoreDetails): string =
+    runnableExamples:
+        echo $CategoryScoreDetails
+        echo fmt"{CategoryScoreDetails}"
+        echo &"{CategoryScoreDetails}"
+    var resultSeq: seq[string]
+    if message.hasnone:
+        resultSeq.add(&"none: {message.none}")
+    if message.hasarmy:
+        resultSeq.add(&"army: {message.army}")
+    if message.haseconomy:
+        resultSeq.add(&"economy: {message.economy}")
+    if message.hastechnology:
+        resultSeq.add(&"technology: {message.technology}")
+    if message.hasupgrade:
+        resultSeq.add(&"upgrade: {message.upgrade}")
+    result = resultSeq.join(", ")
+    result = &"CategoryScoreDetails({result})"
+
 proc sizeOfCategoryScoreDetails*(message: CategoryScoreDetails): uint64 =
     if hasnone(message):
         result = result + sizeOfTag(1, WireType.Fixed32)
@@ -333,6 +353,21 @@ proc energy*(message: VitalScoreDetails): float32 {.inline.} =
 
 proc `energy=`*(message: VitalScoreDetails, value: float32) {.inline.} =
     setenergy(message, value)
+
+proc `$`*(message: VitalScoreDetails): string =
+    runnableExamples:
+        echo $VitalScoreDetails
+        echo fmt"{VitalScoreDetails}"
+        echo &"{VitalScoreDetails}"
+    var resultSeq: seq[string]
+    if message.haslife:
+        resultSeq.add(&"life: {message.life}")
+    if message.hasshields:
+        resultSeq.add(&"shields: {message.shields}")
+    if message.hasenergy:
+        resultSeq.add(&"energy: {message.energy}")
+    result = resultSeq.join(", ")
+    result = &"VitalScoreDetails({result})"
 
 proc sizeOfVitalScoreDetails*(message: VitalScoreDetails): uint64 =
     if haslife(message):
@@ -910,6 +945,71 @@ proc currentEffectiveApm*(message: ScoreDetails): float32 {.inline.} =
 proc `currentEffectiveApm=`*(message: ScoreDetails, value: float32) {.inline.} =
     setcurrentEffectiveApm(message, value)
 
+proc `$`*(message: ScoreDetails): string =
+    runnableExamples:
+        echo $ScoreDetails
+        echo fmt"{ScoreDetails}"
+        echo &"{ScoreDetails}"
+    var resultSeq: seq[string]
+    if message.hasidleProductionTime:
+        resultSeq.add(&"idleProductionTime: {message.idleProductionTime}")
+    if message.hasidleWorkerTime:
+        resultSeq.add(&"idleWorkerTime: {message.idleWorkerTime}")
+    if message.hastotalValueUnits:
+        resultSeq.add(&"totalValueUnits: {message.totalValueUnits}")
+    if message.hastotalValueStructures:
+        resultSeq.add(&"totalValueStructures: {message.totalValueStructures}")
+    if message.haskilledValueUnits:
+        resultSeq.add(&"killedValueUnits: {message.killedValueUnits}")
+    if message.haskilledValueStructures:
+        resultSeq.add(&"killedValueStructures: {message.killedValueStructures}")
+    if message.hascollectedMinerals:
+        resultSeq.add(&"collectedMinerals: {message.collectedMinerals}")
+    if message.hascollectedVespene:
+        resultSeq.add(&"collectedVespene: {message.collectedVespene}")
+    if message.hascollectionRateMinerals:
+        resultSeq.add(&"collectionRateMinerals: {message.collectionRateMinerals}")
+    if message.hascollectionRateVespene:
+        resultSeq.add(&"collectionRateVespene: {message.collectionRateVespene}")
+    if message.hasspentMinerals:
+        resultSeq.add(&"spentMinerals: {message.spentMinerals}")
+    if message.hasspentVespene:
+        resultSeq.add(&"spentVespene: {message.spentVespene}")
+    if message.hasfoodUsed:
+        resultSeq.add(&"foodUsed: {message.foodUsed}")
+    if message.haskilledMinerals:
+        resultSeq.add(&"killedMinerals: {message.killedMinerals}")
+    if message.haskilledVespene:
+        resultSeq.add(&"killedVespene: {message.killedVespene}")
+    if message.haslostMinerals:
+        resultSeq.add(&"lostMinerals: {message.lostMinerals}")
+    if message.haslostVespene:
+        resultSeq.add(&"lostVespene: {message.lostVespene}")
+    if message.hasfriendlyFireMinerals:
+        resultSeq.add(&"friendlyFireMinerals: {message.friendlyFireMinerals}")
+    if message.hasfriendlyFireVespene:
+        resultSeq.add(&"friendlyFireVespene: {message.friendlyFireVespene}")
+    if message.hasusedMinerals:
+        resultSeq.add(&"usedMinerals: {message.usedMinerals}")
+    if message.hasusedVespene:
+        resultSeq.add(&"usedVespene: {message.usedVespene}")
+    if message.hastotalUsedMinerals:
+        resultSeq.add(&"totalUsedMinerals: {message.totalUsedMinerals}")
+    if message.hastotalUsedVespene:
+        resultSeq.add(&"totalUsedVespene: {message.totalUsedVespene}")
+    if message.hastotalDamageDealt:
+        resultSeq.add(&"totalDamageDealt: {message.totalDamageDealt}")
+    if message.hastotalDamageTaken:
+        resultSeq.add(&"totalDamageTaken: {message.totalDamageTaken}")
+    if message.hastotalHealed:
+        resultSeq.add(&"totalHealed: {message.totalHealed}")
+    if message.hascurrentApm:
+        resultSeq.add(&"currentApm: {message.currentApm}")
+    if message.hascurrentEffectiveApm:
+        resultSeq.add(&"currentEffectiveApm: {message.currentEffectiveApm}")
+    result = resultSeq.join(", ")
+    result = &"ScoreDetails({result})"
+
 proc sizeOfScoreDetails*(message: ScoreDetails): uint64 =
     if hasidleProductionTime(message):
         result = result + sizeOfTag(1, WireType.Fixed32)
@@ -1249,6 +1349,21 @@ proc scoreDetails*(message: Score): ScoreDetails {.inline.} =
 
 proc `scoreDetails=`*(message: Score, value: ScoreDetails) {.inline.} =
     setscoreDetails(message, value)
+
+proc `$`*(message: Score): string =
+    runnableExamples:
+        echo $Score
+        echo fmt"{Score}"
+        echo &"{Score}"
+    var resultSeq: seq[string]
+    if message.hasscoreType:
+        resultSeq.add(&"scoreType: {message.scoreType}")
+    if message.hasscore:
+        resultSeq.add(&"score: {message.score}")
+    if message.hasscoreDetails:
+        resultSeq.add(&"scoreDetails: {message.scoreDetails}")
+    result = resultSeq.join(", ")
+    result = &"Score({result})"
 
 proc sizeOfScore*(message: Score): uint64 =
     if hasscoreType(message):

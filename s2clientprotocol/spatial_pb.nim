@@ -4,6 +4,7 @@ import base64
 import intsets
 import json
 import strutils
+import strformat
 
 import nimpb/nimpb
 import nimpb/json as nimpb_json
@@ -228,6 +229,19 @@ proc selectionAdd*(message: ActionSpatialUnitSelectionRect): bool {.inline.} =
 proc `selectionAdd=`*(message: ActionSpatialUnitSelectionRect, value: bool) {.inline.} =
     setselectionAdd(message, value)
 
+proc `$`*(message: ActionSpatialUnitSelectionRect): string =
+    runnableExamples:
+        echo $ActionSpatialUnitSelectionRect
+        echo fmt"{ActionSpatialUnitSelectionRect}"
+        echo &"{ActionSpatialUnitSelectionRect}"
+    var resultSeq: seq[string]
+    if message.hasselectionScreenCoord:
+        resultSeq.add(&"selectionScreenCoord: {message.selectionScreenCoord}")
+    if message.hasselectionAdd:
+        resultSeq.add(&"selectionAdd: {message.selectionAdd}")
+    result = resultSeq.join(", ")
+    result = &"ActionSpatialUnitSelectionRect({result})"
+
 proc sizeOfActionSpatialUnitSelectionRect*(message: ActionSpatialUnitSelectionRect): uint64 =
     for value in message.selectionScreenCoord:
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -310,6 +324,17 @@ proc centerMinimap*(message: ActionSpatialCameraMove): PointI {.inline.} =
 
 proc `centerMinimap=`*(message: ActionSpatialCameraMove, value: PointI) {.inline.} =
     setcenterMinimap(message, value)
+
+proc `$`*(message: ActionSpatialCameraMove): string =
+    runnableExamples:
+        echo $ActionSpatialCameraMove
+        echo fmt"{ActionSpatialCameraMove}"
+        echo &"{ActionSpatialCameraMove}"
+    var resultSeq: seq[string]
+    if message.hascenterMinimap:
+        resultSeq.add(&"centerMinimap: {message.centerMinimap}")
+    result = resultSeq.join(", ")
+    result = &"ActionSpatialCameraMove({result})"
 
 proc sizeOfActionSpatialCameraMove*(message: ActionSpatialCameraMove): uint64 =
     if hascenterMinimap(message):
@@ -403,6 +428,19 @@ proc ftype*(message: ActionSpatialUnitSelectionPoint): ActionSpatialUnitSelectio
 
 proc `ftype=`*(message: ActionSpatialUnitSelectionPoint, value: ActionSpatialUnitSelectionPoint_Type) {.inline.} =
     setftype(message, value)
+
+proc `$`*(message: ActionSpatialUnitSelectionPoint): string =
+    runnableExamples:
+        echo $ActionSpatialUnitSelectionPoint
+        echo fmt"{ActionSpatialUnitSelectionPoint}"
+        echo &"{ActionSpatialUnitSelectionPoint}"
+    var resultSeq: seq[string]
+    if message.hasselectionScreenCoord:
+        resultSeq.add(&"selectionScreenCoord: {message.selectionScreenCoord}")
+    if message.hasftype:
+        resultSeq.add(&"ftype: {message.ftype}")
+    result = resultSeq.join(", ")
+    result = &"ActionSpatialUnitSelectionPoint({result})"
 
 proc sizeOfActionSpatialUnitSelectionPoint*(message: ActionSpatialUnitSelectionPoint): uint64 =
     if hasselectionScreenCoord(message):
@@ -549,6 +587,23 @@ proc queueCommand*(message: ActionSpatialUnitCommand): bool {.inline.} =
 
 proc `queueCommand=`*(message: ActionSpatialUnitCommand, value: bool) {.inline.} =
     setqueueCommand(message, value)
+
+proc `$`*(message: ActionSpatialUnitCommand): string =
+    runnableExamples:
+        echo $ActionSpatialUnitCommand
+        echo fmt"{ActionSpatialUnitCommand}"
+        echo &"{ActionSpatialUnitCommand}"
+    var resultSeq: seq[string]
+    if message.hasabilityId:
+        resultSeq.add(&"abilityId: {message.abilityId}")
+    if message.hasqueueCommand:
+        resultSeq.add(&"queueCommand: {message.queueCommand}")
+    if message.hastargetScreenCoord:
+        resultSeq.add(&"targetScreenCoord: {message.targetScreenCoord}")
+    if message.hastargetMinimapCoord:
+        resultSeq.add(&"targetMinimapCoord: {message.targetMinimapCoord}")
+    result = resultSeq.join(", ")
+    result = &"ActionSpatialUnitCommand({result})"
 
 proc sizeOfActionSpatialUnitCommand*(message: ActionSpatialUnitCommand): uint64 =
     if hasabilityId(message):
@@ -720,6 +775,23 @@ proc unitSelectionRect*(message: ActionSpatial): ActionSpatialUnitSelectionRect 
 
 proc `unitSelectionRect=`*(message: ActionSpatial, value: ActionSpatialUnitSelectionRect) {.inline.} =
     setunitSelectionRect(message, value)
+
+proc `$`*(message: ActionSpatial): string =
+    runnableExamples:
+        echo $ActionSpatial
+        echo fmt"{ActionSpatial}"
+        echo &"{ActionSpatial}"
+    var resultSeq: seq[string]
+    if message.hasunitCommand:
+        resultSeq.add(&"unitCommand: {message.unitCommand}")
+    if message.hascameraMove:
+        resultSeq.add(&"cameraMove: {message.cameraMove}")
+    if message.hasunitSelectionPoint:
+        resultSeq.add(&"unitSelectionPoint: {message.unitSelectionPoint}")
+    if message.hasunitSelectionRect:
+        resultSeq.add(&"unitSelectionRect: {message.unitSelectionRect}")
+    result = resultSeq.join(", ")
+    result = &"ActionSpatial({result})"
 
 proc sizeOfActionSpatial*(message: ActionSpatial): uint64 =
     if hasunitCommand(message):
@@ -1291,6 +1363,69 @@ proc placeholder*(message: FeatureLayers): ImageData {.inline.} =
 proc `placeholder=`*(message: FeatureLayers, value: ImageData) {.inline.} =
     setplaceholder(message, value)
 
+proc `$`*(message: FeatureLayers): string =
+    runnableExamples:
+        echo $FeatureLayers
+        echo fmt"{FeatureLayers}"
+        echo &"{FeatureLayers}"
+    var resultSeq: seq[string]
+    if message.hasheightMap:
+        resultSeq.add(&"heightMap: {message.heightMap}")
+    if message.hasvisibilityMap:
+        resultSeq.add(&"visibilityMap: {message.visibilityMap}")
+    if message.hascreep:
+        resultSeq.add(&"creep: {message.creep}")
+    if message.haspower:
+        resultSeq.add(&"power: {message.power}")
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.hasunitType:
+        resultSeq.add(&"unitType: {message.unitType}")
+    if message.hasselected:
+        resultSeq.add(&"selected: {message.selected}")
+    if message.hasunitHitPoints:
+        resultSeq.add(&"unitHitPoints: {message.unitHitPoints}")
+    if message.hasunitHitPointsRatio:
+        resultSeq.add(&"unitHitPointsRatio: {message.unitHitPointsRatio}")
+    if message.hasunitEnergy:
+        resultSeq.add(&"unitEnergy: {message.unitEnergy}")
+    if message.hasunitEnergyRatio:
+        resultSeq.add(&"unitEnergyRatio: {message.unitEnergyRatio}")
+    if message.hasunitShields:
+        resultSeq.add(&"unitShields: {message.unitShields}")
+    if message.hasunitShieldsRatio:
+        resultSeq.add(&"unitShieldsRatio: {message.unitShieldsRatio}")
+    if message.hasplayerRelative:
+        resultSeq.add(&"playerRelative: {message.playerRelative}")
+    if message.hasunitDensityAa:
+        resultSeq.add(&"unitDensityAa: {message.unitDensityAa}")
+    if message.hasunitDensity:
+        resultSeq.add(&"unitDensity: {message.unitDensity}")
+    if message.haseffects:
+        resultSeq.add(&"effects: {message.effects}")
+    if message.hashallucinations:
+        resultSeq.add(&"hallucinations: {message.hallucinations}")
+    if message.hascloaked:
+        resultSeq.add(&"cloaked: {message.cloaked}")
+    if message.hasblip:
+        resultSeq.add(&"blip: {message.blip}")
+    if message.hasbuffs:
+        resultSeq.add(&"buffs: {message.buffs}")
+    if message.hasbuffDuration:
+        resultSeq.add(&"buffDuration: {message.buffDuration}")
+    if message.hasactive:
+        resultSeq.add(&"active: {message.active}")
+    if message.hasbuildProgress:
+        resultSeq.add(&"buildProgress: {message.buildProgress}")
+    if message.hasbuildable:
+        resultSeq.add(&"buildable: {message.buildable}")
+    if message.haspathable:
+        resultSeq.add(&"pathable: {message.pathable}")
+    if message.hasplaceholder:
+        resultSeq.add(&"placeholder: {message.placeholder}")
+    result = resultSeq.join(", ")
+    result = &"FeatureLayers({result})"
+
 proc sizeOfFeatureLayers*(message: FeatureLayers): uint64 =
     if hasheightMap(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1618,6 +1753,19 @@ proc minimap*(message: ObservationRender): ImageData {.inline.} =
 proc `minimap=`*(message: ObservationRender, value: ImageData) {.inline.} =
     setminimap(message, value)
 
+proc `$`*(message: ObservationRender): string =
+    runnableExamples:
+        echo $ObservationRender
+        echo fmt"{ObservationRender}"
+        echo &"{ObservationRender}"
+    var resultSeq: seq[string]
+    if message.hasmap:
+        resultSeq.add(&"map: {message.map}")
+    if message.hasminimap:
+        resultSeq.add(&"minimap: {message.minimap}")
+    result = resultSeq.join(", ")
+    result = &"ObservationRender({result})"
+
 proc sizeOfObservationRender*(message: ObservationRender): uint64 =
     if hasmap(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -1882,6 +2030,37 @@ proc unitType*(message: FeatureLayersMinimap): ImageData {.inline.} =
 proc `unitType=`*(message: FeatureLayersMinimap, value: ImageData) {.inline.} =
     setunitType(message, value)
 
+proc `$`*(message: FeatureLayersMinimap): string =
+    runnableExamples:
+        echo $FeatureLayersMinimap
+        echo fmt"{FeatureLayersMinimap}"
+        echo &"{FeatureLayersMinimap}"
+    var resultSeq: seq[string]
+    if message.hasheightMap:
+        resultSeq.add(&"heightMap: {message.heightMap}")
+    if message.hasvisibilityMap:
+        resultSeq.add(&"visibilityMap: {message.visibilityMap}")
+    if message.hascreep:
+        resultSeq.add(&"creep: {message.creep}")
+    if message.hascamera:
+        resultSeq.add(&"camera: {message.camera}")
+    if message.hasplayerId:
+        resultSeq.add(&"playerId: {message.playerId}")
+    if message.hasplayerRelative:
+        resultSeq.add(&"playerRelative: {message.playerRelative}")
+    if message.hasselected:
+        resultSeq.add(&"selected: {message.selected}")
+    if message.hasalerts:
+        resultSeq.add(&"alerts: {message.alerts}")
+    if message.hasbuildable:
+        resultSeq.add(&"buildable: {message.buildable}")
+    if message.haspathable:
+        resultSeq.add(&"pathable: {message.pathable}")
+    if message.hasunitType:
+        resultSeq.add(&"unitType: {message.unitType}")
+    result = resultSeq.join(", ")
+    result = &"FeatureLayersMinimap({result})"
+
 proc sizeOfFeatureLayersMinimap*(message: FeatureLayersMinimap): uint64 =
     if hasheightMap(message):
         result = result + sizeOfTag(1, WireType.LengthDelimited)
@@ -2064,6 +2243,19 @@ proc minimapRenders*(message: ObservationFeatureLayer): FeatureLayersMinimap {.i
 
 proc `minimapRenders=`*(message: ObservationFeatureLayer, value: FeatureLayersMinimap) {.inline.} =
     setminimapRenders(message, value)
+
+proc `$`*(message: ObservationFeatureLayer): string =
+    runnableExamples:
+        echo $ObservationFeatureLayer
+        echo fmt"{ObservationFeatureLayer}"
+        echo &"{ObservationFeatureLayer}"
+    var resultSeq: seq[string]
+    if message.hasrenders:
+        resultSeq.add(&"renders: {message.renders}")
+    if message.hasminimapRenders:
+        resultSeq.add(&"minimapRenders: {message.minimapRenders}")
+    result = resultSeq.join(", ")
+    result = &"ObservationFeatureLayer({result})"
 
 proc sizeOfObservationFeatureLayer*(message: ObservationFeatureLayer): uint64 =
     if hasrenders(message):
