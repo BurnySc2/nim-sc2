@@ -11,15 +11,9 @@ import strformat
 
 import sc2process
 import newType
+import types
 
 let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
-
-type
-    Client* = ref ClientObj
-    ClientObj* = object
-        process*: SC2Process
-        ws*: WebSocket
-        wsConnected: bool
 
 proc wsPath(c: Client): string =
     fmt"ws://{c.process.ip}:{c.process.port}/sc2api"

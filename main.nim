@@ -15,6 +15,7 @@ import sc2/bot
 import sc2/client
 import sc2/newType
 import sc2/sc2process
+import sc2/types
 
 let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 

@@ -3,15 +3,9 @@ import system
 import osproc
 import logging
 
-let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
+import types
 
-type
-    SC2Process* = ref SC2ProcessObj
-    SC2ProcessObj* = object
-        ip*: string
-        port*: string
-        cwd*: string
-        process: Process
+let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
 proc launch*(p: SC2Process) =
     logger.log(lvlInfo, "Launching sc2")
