@@ -11,6 +11,8 @@ import system
 
 import client
 import newType
+import unit
+import units
 import types
 
 let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
@@ -40,10 +42,8 @@ proc newBot*(client: Client): Future[Bot] {.async.} =
 
 proc onStart(bot: Bot) {.async.} =
     let newActions = collect:
-        for unit in bot.observationRaw.units:
-            if unit.alliance == Alliance.Self:
-                newAction(abilityId = 3674, # Attack
-                unitTags = @[unit.tag], targetWorldSpacePos = bot.enemySpawns[0])
+        for unit in bot.observationRaw.units.own.ofType(45):
+            unit.attack(bot.enemySpawns[0])
     bot.actions &= newActions
 
 proc step(bot: Bot) {.async.} =
