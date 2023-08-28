@@ -32,13 +32,10 @@ proc main() {.async.} =
         # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/sc2process.py#L204
         # https://github.com/treeform/ws#example-client-socket
         logger.log(lvlInfo, "Connecting to websocket")
-        # Not sure why it needs to be like this
-        # https://nim-lang.org/docs/manual.html#types-object-construction
         let client = Client(process: process)
         await client.connect
 
-        # Create game (= send which map to load)
-        # https://github.com/BurnySc2/python-sc2/blob/76e4a435732d4359e5bd9e15b6283a0498e212ca/sc2/controller.py#L22C15-L22C26
+        # Create game (= tell which map to load)
         discard await client.createGame
 
         # Join game as player (map loading will start after this request)
@@ -52,7 +49,7 @@ proc main() {.async.} =
         # Wait a bit
         sleep(1000)
 
-        # Close when done
+        # Close ws connection when done
         client.disconnect
 waitFor main()
 

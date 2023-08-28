@@ -17,7 +17,6 @@ import types
 
 let logger = newConsoleLogger(fmtStr = "[$time] - $levelname: ")
 
-
 proc observationRaw*(bot: Bot): ObservationRaw = bot.observation.observation.rawData
 proc enemySpawns*(bot: Bot): seq[Point2D] = bot.gameInfo.startRaw.startLocations
 proc gameLoop*(bot: Bot): uint32 = bot.observation.observation.gameLoop
@@ -75,11 +74,3 @@ proc botLoop*(bot: Bot) {.async.} =
         if bot.gameLoop > (22.4 * 120).uint64:
             logger.log(lvlInfo, "Ending game, game ran for 120 seconds")
             break
-
-        # Request query
-
-        # Request map_command?
-        # Request ping?
-        # Request available_maps?
-        # Request debug?
-        # Send actions

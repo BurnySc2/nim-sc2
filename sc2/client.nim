@@ -61,6 +61,8 @@ proc sendRequest(c: Client, request: Request): Future[Response] {.async.} =
         logger.log(lvlInfo, "Request of previous response was:")
         logger.log(lvlInfo, &"  {request}")
 
+# Sc2 api requests - interacton with the sc2 client ---------------------------
+# https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/sc2api.proto#L84-L119
 proc getAvailableMaps*(c: Client): Future[Response] {.async.} # Defined later
 proc createGame*(c: Client): Future[Response] {.async.} =
     let request = newRequestCreateGame()
@@ -101,17 +103,48 @@ proc joinGame*(c: Client): Future[Response] {.async.} =
     finalRequest.joinGame = request
     return await c.sendRequest(finalRequest)
 
-proc getAvailableMaps*(c: Client): Future[Response] {.async.} =
-    let request = newRequestAvailableMaps()
-    let finalRequest = newRequest()
-    finalRequest.availableMaps = request
-    return await c.sendRequest(finalRequest)
+proc restartGame*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc startReplay*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc quickSave*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc quickLoad*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc quit*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
 
 proc getGameInfo*(c: Client): Future[Response] {.async.} =
     let request = newRequestGameInfo()
     let finalRequest = newRequest()
     finalRequest.gameInfo = request
     return await c.sendRequest(finalRequest)
+
+proc getObservation*(c: Client): Future[Response] {.async.} =
+    let request = newRequestObservation()
+    let finalRequest = newRequest()
+    finalRequest.observation = request
+    return await c.sendRequest(finalRequest)
+
+proc sendActions*(c: Client, actions: seq[Action]): Future[Response] {.async.} =
+    # TODO Dont send request if actions list empty?
+    return await c.sendRequest(newRequest(request = newRequestAction(actions = actions)))
+
+proc obsAction*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc step*(c: Client, count: uint32): Future[Response] {.async.} =
+    return await c.sendRequest(newRequest(request = newRequestStep(count = count)))
 
 proc getGameData*(c: Client): Future[Response] {.async.} =
     let request = newRequestData()
@@ -124,18 +157,39 @@ proc getGameData*(c: Client): Future[Response] {.async.} =
     finalRequest.data = request
     return await c.sendRequest(finalRequest)
 
-proc getObservation*(c: Client): Future[Response] {.async.} =
-    let request = newRequestObservation()
+proc query*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc saveReplay*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc mapCommand*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc replayInfo*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc getAvailableMaps*(c: Client): Future[Response] {.async.} =
+    let request = newRequestAvailableMaps()
     let finalRequest = newRequest()
-    finalRequest.observation = request
+    finalRequest.availableMaps = request
     return await c.sendRequest(finalRequest)
 
-proc step*(c: Client, count: uint32): Future[Response] {.async.} =
-    return await c.sendRequest(newRequest(request = newRequestStep(count = count)))
+proc saveMap*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
 
-proc sendActions*(c: Client, actions: seq[Action]): Future[Response] {.async.} =
-    # TODO Dont send request if actions list empty?
-    return await c.sendRequest(newRequest(request = newRequestAction(actions = actions)))
+proc ping*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
+
+proc debug*(c: Client): Future[Response] {.async.} =
+    # TODO
+    discard
 
 when isMainModule:
     import ../s2clientprotocol/raw_pb
