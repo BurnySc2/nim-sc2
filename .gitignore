@@ -15,3 +15,6 @@ bin
 
 nimpb_build
 nimpb_build.exe
+
+# Earthly
+!Earthfile

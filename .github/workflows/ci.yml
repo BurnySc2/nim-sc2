@@ -1,0 +1,30 @@
+# If you change the name, change the link on  the README.md for the badge too
+name: run_earthly_checks
+
+on: [push, pull_request]
+
+jobs:
+  run_earthly_checks:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        nim-version: ['1.6.14', '2.0.0']
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # https://earthly.dev/get-earthly
+    - name: Install Earthly
+      run: sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly && /usr/local/bin/earthly bootstrap --with-autocomplete'
+
+    - name: Install
+      run: |
+        earthly +setup --verbose true --NIMVERSION=${{ matrix.nim-version }}
+
+    - name: Compile
+      run: earthly +compile-all --verbose true --NIMVERSION=${{ matrix.nim-version }}
+
+    - name: Run tests
+      run: earthly +run-tests --verbose true --NIMVERSION=${{ matrix.nim-version }}
