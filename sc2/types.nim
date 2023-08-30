@@ -21,10 +21,21 @@ type
         ws*: WebSocket
         wsConnected*: bool
     Bot* = ref BotObj
-    BotObj* = object
+    BotObj* = object of RootObj
         client*: Client
         gameData*: ResponseData
         gameInfo*: ResponseGameInfo
         observation*: ResponseObservation
         actions*: seq[Action]
         status*: Status
+        name*: string
+    GameSetup* = ref GameSetupObj
+    GameSetupObj* = object
+        player1*: PlayerSetup
+        player1bot*: Bot
+        player2*: PlayerSetup
+        player2bot*: Bot
+        mapName*: string
+        realtime*: bool
+        randomSeed*: uint32
+        # maxGameDurationSeconds: uint32

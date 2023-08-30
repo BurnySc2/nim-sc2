@@ -3,13 +3,11 @@ import ws
 
 # Converted protobufs
 import ../s2clientprotocol/sc2api_pb
-import ../s2clientprotocol/common_pb
 
 import asyncdispatch
 import logging
 import strformat
 
-import sc2process
 import newType
 import types
 
@@ -64,10 +62,10 @@ proc sendRequest(c: Client, request: Request): Future[Response] {.async.} =
 # Sc2 api requests - interacton with the sc2 client ---------------------------
 # https://github.com/Blizzard/s2client-proto/blob/bb587ce9acb37b776b516cdc1529934341426580/s2clientprotocol/sc2api.proto#L84-L119
 proc getAvailableMaps*(c: Client): Future[Response] {.async.} # Defined later
-proc createGame*(c: Client): Future[Response] {.async.} =
+proc createGame*(c: Client, game: GameSetup): Future[Response] {.async.} =
     let request = newRequestCreateGame()
     let localMap = newLocalMap()
-    localMap.mapPath = "(2)CatalystLE.SC2Map"
+    localMap.mapPath = game.mapName
 
     # Validate that the requested map is available
     let mapsResponse = await c.getAvailableMaps
@@ -75,21 +73,16 @@ proc createGame*(c: Client): Future[Response] {.async.} =
     doAssert maps.contains(localMap.mapPath), fmt"Map '{localMap.mapPath}' was not found. Available maps are: {maps}"
 
     request.localMap = localMap
-    let p1 = newPlayerSetup()
-    p1.ftype = PlayerType.Participant
-    let p2 = newPlayerSetup()
-    p2.ftype = PlayerType.Computer
-    p2.race = Race.Terran
-    p2.difficulty = Difficulty.VeryHard
-    request.playerSetup = @[p1, p2]
-    request.realtime = false
+    request.playerSetup = @[game.player1, game.player2]
+    request.realtime = game.realtime
+    request.randomSeed = game.randomSeed
     let finalRequest = newRequest()
     finalRequest.createGame = request
     return await c.sendRequest(finalRequest)
 
-proc joinGame*(c: Client): Future[Response] {.async.} =
+proc joinGame*(c: Client, playerSetup: PlayerSetup): Future[Response] {.async.} =
     let request = newRequestJoinGame()
-    request.race = Race.Terran
+    request.race = playerSetup.race
     let options = newInterfaceOptions()
     options.raw = true
     options.score = true
@@ -192,6 +185,7 @@ proc debug*(c: Client): Future[Response] {.async.} =
     discard
 
 when isMainModule:
+    import ../s2clientprotocol/common_pb
     import ../s2clientprotocol/raw_pb
 
     let point = newPoint2D()

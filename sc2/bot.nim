@@ -21,34 +21,40 @@ proc observationRaw*(bot: Bot): ObservationRaw = bot.observation.observation.raw
 proc enemySpawns*(bot: Bot): seq[Point2D] = bot.gameInfo.startRaw.startLocations
 proc gameLoop*(bot: Bot): uint32 = bot.observation.observation.gameLoop
 
-proc newBot*(client: Client): Future[Bot] {.async.} =
-    # Init variables
-    result = Bot(status: Status.unknown, client: client)
+# proc newBot*(): Bot =
+#     # Init variables
+#     result = Bot(status: Status.unknown)
 
-    let gameDataResponse = await result.client.getGameData
-    result.status = gameDataResponse.status
-    result.gameData = gameDataResponse.data
+proc initBot*(bot: Bot) {.async.} =
+    let gameDataResponse = await bot.client.getGameData
+    bot.status = gameDataResponse.status
+    bot.gameData = gameDataResponse.data
     # Write to enum file?
     # Overwrite enum values when trying to access them? Dont crash when enum doesnt exist
     # for i, unit in gameData.data.units[0..100]:
     #     echo $unit
 
-    let gameInfoResponse = await result.client.getGameInfo
-    result.status = gameInfoResponse.status
-    result.gameInfo = gameInfoResponse.gameInfo
+    let gameInfoResponse = await bot.client.getGameInfo
+    bot.status = gameInfoResponse.status
+    bot.gameInfo = gameInfoResponse.gameInfo
 
-    assert result.enemySpawns.len == 1, "Requires two player map"
+    assert bot.enemySpawns.len == 1, "Requires two player map"
 
-proc onStart(bot: Bot) {.async.} =
-    let newActions = collect:
-        for unit in bot.observationRaw.units.own.ofType(45):
-            unit.attack(bot.enemySpawns[0])
-    bot.actions &= newActions
-
-proc step(bot: Bot) {.async.} =
+method onStart*(bot: Bot) {.async.} =
     discard
 
+method step*(bot: Bot) {.async.} =
+    discard
+
+# Alternatively something like this to avoid dynamic dispatch
+# proc onStart*(bot: Bot) {.async.} =
+#     discard
+# proc step*(bot: Bot) {.async.} =
+#     discard
+# proc botLoop*[T: Bot](bot: T) {.async.} =
+
 proc botLoop*(bot: Bot) {.async.} =
+    await bot.initBot
     while bot.status == Status.inGame:
         # Request observation
         let responseObservation: Response = await bot.client.getObservation

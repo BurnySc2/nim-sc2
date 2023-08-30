@@ -13,11 +13,13 @@ proc launch*(p: SC2Process) =
         command = "/usr/bin/wine",
         workingDir = p.cwd,
         args = ["start", "/d", fmt"{p.cwd}/Support64/", "/unix",
-                fmt"{p.cwd}/Versions/Base90136/SC2_x64.exe", "-listen", p.ip, "-port",
-                p.port, "-dataDir", p.cwd, "-tempDir", "/tmp/SC2_0peqhatp", ]
+                fmt"{p.cwd}/Versions/Base90136/SC2_x64.exe",
+                # DirectX will fail if multiple games try to launch in fullscreen mode. Force them into windowed mode.
+        "-displayMode", "0", "-listen", p.ip, "-port",
+        p.port, "-dataDir", p.cwd, "-tempDir", "/tmp/SC2_0peqhatp", ]
     )
 
-proc kill(p: SC2Process) =
+proc kill*(p: SC2Process) =
     logger.log(lvlInfo, "Killing sc2")
     p.process.close()
     discard execCmd("/usr/bin/wineserver -k")

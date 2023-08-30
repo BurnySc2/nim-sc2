@@ -2,6 +2,8 @@ import ../s2clientprotocol/sc2api_pb
 import ../s2clientprotocol/raw_pb
 import ../s2clientprotocol/common_pb
 
+import types
+
 # Helper functions to create protobuf objects in one go
 proc newRequestStep*(count: uint32): RequestStep =
     result = newRequestStep()
@@ -47,3 +49,57 @@ proc newAction*(abilityId: int32, unitTags: seq[uint64], x: float32, y: float32)
 
 # proc newAction*(abilityId: int32, unitTags: seq[uint64]): Action =
     # TODO without target, e.g. stop command
+
+# Create bot setup
+proc newPlayerSetup*(
+    race: Race,
+    botName: string = "My amazing bot",
+): PlayerSetup =
+    result = newPlayerSetup()
+    result.ftype = PlayerType.Participant
+    result.race = race
+    result.playerName = botName
+
+# Create ai setup
+proc newPlayerSetup*(
+    race: Race,
+    difficulty: Difficulty,
+    aiBuild: AIBuild = AIBuild.RandomBuild,
+): PlayerSetup =
+    result = newPlayerSetup()
+    result.ftype = PlayerType.Computer
+    result.race = race
+
+# Create game: custom bot vs built-in-AI
+proc newGameSetup*(
+    botObject: Bot,
+    botRace: Race = Race.Random,
+    botName: string = "My amazing bot",
+    aiRace: Race = Race.Random,
+    aiDifficulty: Difficulty = Difficulty.VeryEasy,
+    aiBuild: AIBuild = AIBuild.RandomBuild,
+    mapName: string,
+    realtime: bool,
+    randomSeed: uint32,
+): GameSetup =
+    let player1 = newPlayerSetup(race = botRace, botName = botName)
+    let player2 = newPlayerSetup(race = aiRace, difficulty = aiDifficulty, aiBuild = aiBuild)
+    result = GameSetup(player1: player1, player1bot: botObject, player2: player2, mapName: mapName, realtime: realtime,
+            randomSeed: randomSeed)
+
+# Create game: custom bot vs custom bot
+proc newGameSetup*(
+    bot1Object: Bot,
+    bot1Race: Race = Race.Random,
+    bot1Name: string = "My amazing bot1",
+    bot2Object: Bot,
+    bot2Race: Race = Race.Random,
+    bot2Name: string = "My amazing bot2",
+    aiBuild: AIBuild = AIBuild.RandomBuild,
+    mapName: string,
+    realtime: bool = false,
+    randomSeed: uint32,
+): GameSetup =
+    let player1 = newPlayerSetup(race = bot1Race, botName = bot1Name)
+    let player2 = newPlayerSetup(race = bot2Race, botName = bot2Name)
+    result = GameSetup(player1: player1, player2: player2, mapName: mapName, realtime: realtime, randomSeed: randomSeed)
